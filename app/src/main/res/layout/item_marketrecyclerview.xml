@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/marketrecyclerview_main"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardBackgroundColor="@color/BottomNav"
+    app:cardElevation="0dp"
+    app:cardCornerRadius="10dp"
+    app:cardUseCompatPadding="true"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/CardStroke">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp">
+        <ImageView
+            android:id="@+id/marketrecyclerview_imageview"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            tools:src="@tools:sample/avatars"
+            android:contentDescription="@string/item_picture" />
+        <TextView
+            android:id="@+id/marketrecyclerview_nametextview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:textSize="20sp"
+            android:textColor="@color/textColor"
+            android:textAlignment="center"
+            tools:text="Whiteout Pants" />
+        <TextView
+            android:id="@+id/marketrecyclerview_pricetextview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:textSize="17sp"
+            android:textColor="@color/textColor"
+            android:textAlignment="center"
+            tools:text="500 руб."/>
+        <TextView
+            android:id="@+id/marketrecyclerview_counttextview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:textSize="17sp"
+            android:textColor="@color/textColor"
+            android:textAlignment="center"
+            tools:text="990 шт."/>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_inventory" >
+
+    <fragment
+        android:id="@+id/navigation_inventory"
+        android:name="com.voxeldev.steammarkethelper.ui.inventory.InventoryFragment"
+        android:label="@string/inventory"
+        tools:layout="@layout/fragment_inventory" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_market"
+        android:name="com.voxeldev.steammarkethelper.ui.market.MarketFragment"
+        android:label="@string/market"
+        tools:layout="@layout/fragment_market" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.voxeldev.steammarkethelper.ui.settings.SettingsFragment"
+        android:label="@string/settings"
+        tools:layout="@layout/fragment_settings" >
+    </fragment>
+</navigation>

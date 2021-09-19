@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">SteamMarketHelper</string>
+    <string name="inventory">Inventory</string>
+    <string name="market">Market</string>
+    <string name="settings">Settings</string>
+    <string name="go_up">Go up</string>
+    <string name="market_count">%1$d pcs.</string>
+    <string name="search">Search</string>
+    <string name="workshop_button_text">View Workshop item</string>
+    <string name="sell_listings">Sell listings</string>
+    <string name="sell_listings_placeholder">Sell listings: %1$s</string>
+    <string name="buy_orders">Buy orders</string>
+    <string name="buy_orders_placeholder">Buy orders: %1$s</string>
+    <string name="item_picture">Item picture</string>
+    <string name="price">Price</string>
+    <string name="count">Count</string>
+    <string name="steam_auth">Steam Authentication</string>
+    <string name="info_error">Market info for this item isn\'t available</string>
+    <string name="wallet_balance_not_set">Wallet balance: </string>
+    <string name="wallet_balance">Wallet balance: %1$s</string>
+    <string name="tradeban_days">%1$dD</string>
+    <string name="tradeban_hours">%1$dH</string>
+</resources>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="textColor">#FFFFFFFF</color>
+    <color name="BorderColor">#91FFFFFF</color>
+    <color name="BottomNav">#202124</color>
+    <color name="MarkerViewBG">#88202124</color>
+    <color name="CardStroke">#FF5F6369</color>
+    <color name="TableRowAltColor">#37A18EC5</color>
+</resources>

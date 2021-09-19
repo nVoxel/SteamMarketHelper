@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/market_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.voxeldev.customswiperefresh.CustomSwipeRefresh
+        android:id="@+id/market_swiperefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:srl_direction="both">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/market_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.voxeldev.customswiperefresh.CustomSwipeRefresh>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/market_goTopButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="15dp"
+        android:contentDescription="@string/go_up"
+        android:src="@drawable/ic_arrow_up"
+        android:visibility="visible"
+        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
+        app:maxImageSize="32dp" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
