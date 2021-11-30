@@ -19,7 +19,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.voxeldev.customswiperefresh.CustomSwipeRefresh;
 import com.voxeldev.customswiperefresh.CustomSwipeRefreshDirection;
-import com.voxeldev.steammarkethelper.MainActivity;
+import com.voxeldev.steammarkethelper.MarketActivity;
 import com.voxeldev.steammarkethelper.R;
 import com.voxeldev.steammarkethelper.models.adapters.MarketRecyclerViewAdapter;
 import com.voxeldev.steammarkethelper.models.market.MarketManager;
@@ -79,11 +79,11 @@ public class MarketFragment extends Fragment {
             return root;
         }
 
-        MainActivity mainActivity = (MainActivity)requireActivity();
-        if (mainActivity.loadedMarket != null && mainActivity.marketRecyclerViewSavedState != null){
-            loadedMarket = mainActivity.loadedMarket;
+        MarketActivity marketActivity = (MarketActivity)requireActivity();
+        if (marketActivity.loadedMarket != null && marketActivity.marketRecyclerViewSavedState != null){
+            loadedMarket = marketActivity.loadedMarket;
             replaceAdapter();
-            marketRecyclerView.getLayoutManager().onRestoreInstanceState(mainActivity.marketRecyclerViewSavedState);
+            marketRecyclerView.getLayoutManager().onRestoreInstanceState(marketActivity.marketRecyclerViewSavedState);
             return root;
         }
 
@@ -97,9 +97,10 @@ public class MarketFragment extends Fragment {
 
         customSwipeRefresh.setRefreshing(true, CustomSwipeRefreshDirection.BOTTOM);
 
-        Thread thread = new Thread(() -> {
-            MarketManager marketManager = new MarketManager(requireContext());
-            MarketModel model = marketManager.getMarketModel((loadedMarket == null) ? 0 : loadedMarket.start, 20, 252490, (loadedMarket == null || loadedMarket.query == null) ? "" : loadedMarket.query);
+        new Thread(() -> {
+            int gameId = ((MarketActivity)requireActivity()).gameId;
+            MarketManager marketManager = new MarketManager(requireContext(), gameId);
+            MarketModel model = marketManager.getMarketModel((loadedMarket == null) ? 0 : loadedMarket.start, 20, gameId, (loadedMarket == null || loadedMarket.query == null) ? "" : loadedMarket.query);
             if (model == null || model.results == null || model.results.size() == 0) { return; }
 
             if (loadedMarket == null){
@@ -120,8 +121,7 @@ public class MarketFragment extends Fragment {
             catch (Exception ignored){}
 
             marketLoading = false;
-        });
-        thread.start();
+        }).start();
     }
 
     private void replaceAdapter(){
@@ -170,8 +170,8 @@ public class MarketFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        ((MainActivity)requireActivity()).loadedMarket = loadedMarket;
-        ((MainActivity)requireActivity()).marketRecyclerViewSavedState = marketRecyclerView.getLayoutManager().onSaveInstanceState();
+        ((MarketActivity)requireActivity()).loadedMarket = loadedMarket;
+        ((MarketActivity)requireActivity()).marketRecyclerViewSavedState = marketRecyclerView.getLayoutManager().onSaveInstanceState();
     }
 
     @Override

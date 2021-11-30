@@ -30,7 +30,7 @@ public class AuthActivity extends AppCompatActivity {
 
                 if (cookie == null || cookie.equals("")){ return; }
 
-                Thread authThread = new Thread(() -> {
+                new Thread(() -> {
                     if (authModel.checkAuth(cookie)) {
                         authWebView.reload();
                         return;
@@ -41,8 +41,7 @@ public class AuthActivity extends AppCompatActivity {
                         finish();
                     }
                     catch (Exception e){ authWebView.reload(); }
-                });
-                authThread.start();
+                }).start();
             }
         });
 

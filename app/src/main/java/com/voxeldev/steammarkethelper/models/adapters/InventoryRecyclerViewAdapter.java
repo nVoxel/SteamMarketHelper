@@ -3,15 +3,11 @@ package com.voxeldev.steammarkethelper.models.adapters;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,10 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
+import com.voxeldev.steammarkethelper.MainActivity;
 import com.voxeldev.steammarkethelper.R;
 import com.voxeldev.steammarkethelper.models.inventory.InventoryAssetModel;
 import com.voxeldev.steammarkethelper.models.inventory.InventoryItemModel;
@@ -34,7 +29,6 @@ import com.voxeldev.steammarkethelper.ui.dialogs.ItemInfoDialog;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Time;
 import java.util.concurrent.TimeUnit;
 
 public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -87,13 +81,13 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
                     InventoryItemModel inventoryItem = model.descriptions.stream()
                             .filter(i -> i.classid.contentEquals(model.assets.get(position).classid)).findFirst().orElse(null);
                     if (inventoryItem == null){
-                        Log.e("SMH", "Cant display info dialog, item not found");
+                        Log.e(MainActivity.LOG_TAG, "Cant display info dialog, item not found");
                         return;
                     }
                     ItemInfoDialog itemInfoDialog = ItemInfoDialog.newInventoryInstance(inventoryItem);
                     itemInfoDialog.showNow(fragmentManager, "inventoryItemInfoDialog");
                 }
-                catch (Exception e){ Log.e("SMH", e.toString()); }
+                catch (Exception e){ Log.e(MainActivity.LOG_TAG, e.toString()); }
             }
         });
         return new ViewHolder(view);
@@ -107,7 +101,7 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
                 .filter(i -> i.classid.contentEquals(inventoryAsset.classid)).findFirst().orElse(null);
 
         if (inventoryItem == null){
-            Log.e("SMH", "Cant find item to display in models");
+            Log.e(MainActivity.LOG_TAG, "Cant find item to display in models");
             return;
         }
 
@@ -173,7 +167,7 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
             }
         }
         catch (Exception e){
-            Log.e("SMH", e.toString());
+            Log.e(MainActivity.LOG_TAG, e.toString());
         }
         return "?";
     }
@@ -187,7 +181,7 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
                 }
             }
         }
-        catch (Exception e){ Log.e("SMH", e.toString()); }
+        catch (Exception e){ Log.e(MainActivity.LOG_TAG, e.toString()); }
         return amount;
     }
 }

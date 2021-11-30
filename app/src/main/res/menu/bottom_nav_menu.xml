@@ -11,9 +11,4 @@
         android:icon="@drawable/ic_market"
         android:title="@string/market" />
 
-    <item
-        android:id="@+id/navigation_settings"
-        android:icon="@drawable/ic_settings"
-        android:title="@string/settings" />
-
 </menu>

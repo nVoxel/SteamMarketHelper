@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.voxeldev.steammarkethelper.MainActivity;
 import com.voxeldev.steammarkethelper.R;
 import com.voxeldev.steammarkethelper.models.market.MarketModel;
 import com.voxeldev.steammarkethelper.ui.dialogs.ItemInfoDialog;
@@ -77,7 +78,7 @@ public class MarketRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     ItemInfoDialog itemInfoDialog = ItemInfoDialog.newMarketInstance(model.results.get(recyclerView.getChildLayoutPosition(clickView)));
                     itemInfoDialog.showNow(fragmentManager, "marketItemInfoDialog");
                 }
-                catch (Exception e){ Log.e("SMH", e.toString()); }
+                catch (Exception e){ Log.e(MainActivity.LOG_TAG, e.toString()); }
             }
         });
         return new ViewHolder(view);
@@ -88,7 +89,10 @@ public class MarketRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         ((ViewHolder)holder).getNameTextView().setText(model.results.get(position).name);
         ((ViewHolder)holder).getPriceTextView().setText(model.results.get(position).sell_price_text);
         ((ViewHolder)holder).getCountTextView().setText(String.format(context.getResources().getString(R.string.market_count), model.results.get(position).sell_listings));
-        Glide.with(context).load("https://community.akamai.steamstatic.com/economy/image/" + model.results.get(position).asset_description.icon_url).into(((ViewHolder)holder).getImageView());
+        Glide.with(context)
+                .load("https://community.akamai.steamstatic.com/economy/image/" +
+                        model.results.get(position).asset_description.icon_url)
+                .into(((ViewHolder)holder).getImageView());
     }
 
     @Override

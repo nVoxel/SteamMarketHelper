@@ -2,48 +2,55 @@ package com.voxeldev.steammarkethelper;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.gson.Gson;
-import com.voxeldev.steammarkethelper.models.auth.AuthModel;
-import com.voxeldev.steammarkethelper.models.inventory.InventoryManager;
-import com.voxeldev.steammarkethelper.models.inventory.InventoryModel;
-import com.voxeldev.steammarkethelper.models.market.MarketModel;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
+import com.voxeldev.steammarkethelper.models.adapters.GamesRecyclerViewAdapter;
+import com.voxeldev.steammarkethelper.models.auth.AuthModel;
+import com.voxeldev.steammarkethelper.models.common.RequestManager;
+import com.voxeldev.steammarkethelper.models.inventory.InventoryManager;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    public InventoryModel loadedInventory;
-    public Parcelable inventoryRecyclerViewSavedState;
-    public MarketModel loadedMarket;
-    public Parcelable marketRecyclerViewSavedState;
+    private RecyclerView gamesRecyclerView;
+    private Elements games;
+    public static final String LOG_TAG = "SMH";
+
+    /*
+    TODO:Encryption for saved cookies
+    TODO:Fix swiperefresh is search mode
+    TODO:Datetime in y axis of charts, charts dark theme
+    TODO:Inventory search, inventory filters (Chips?) (show only Tradeable & Marketable)
+    */
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.navigation_inventory, R.id.navigation_market, R.id.navigation_settings).build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navView, navController);
 
-        if (savedInstanceState != null) {
-            loadedInventory = new Gson().fromJson(savedInstanceState.getString("inventorySerialized"), InventoryModel.class);
-            inventoryRecyclerViewSavedState = savedInstanceState.getParcelable("inventoryRecyclerSavedState");
-            loadedMarket = new Gson().fromJson(savedInstanceState.getString("marketSerialized"), MarketModel.class);
-            marketRecyclerViewSavedState = savedInstanceState.getParcelable("marketRecyclerSavedState");
-        }
+        MaterialButton settingsButton = findViewById(R.id.settings_button);
+        settingsButton.setOnClickListener(view -> {
+            startActivity(new Intent(
+                    getApplicationContext(), SettingsActivity.class));
+            overridePendingTransition(R.anim.left_in, R.anim.right_out);
+        });
 
-        Thread authTherad = new Thread(() -> {
+        new Thread(() -> {
             try{
                 AuthModel authModel = new AuthModel(getApplicationContext());
                 String cookie = authModel.loadCookie();
@@ -53,25 +60,95 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             catch (Exception e){
-                Log.e("SMH", e.getMessage());
+                Log.e(LOG_TAG, e.getMessage());
                 startActivity(new Intent(getApplicationContext(), AuthActivity.class));
             }
+        }).start();
+
+        CircularProgressIndicator inventoryBalanceLoader = findViewById(R.id.balance_loader);
+        TextView inventoryBalanceTextView = findViewById(R.id.balance_textview);
+        findViewById(R.id.balance_cardview).setOnClickListener(v -> {
+            inventoryBalanceTextView.setText(getResources().getString(R.string.wallet_balance_not_set));
+            inventoryBalanceLoader.setVisibility(View.VISIBLE);
+            loadWalletBalance(inventoryBalanceLoader, inventoryBalanceTextView);
         });
-        authTherad.start();
+
+        loadWalletBalance(inventoryBalanceLoader, inventoryBalanceTextView);
+
+        gamesRecyclerView = findViewById(R.id.games_recyclerview);
+        gamesRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+        if (savedInstanceState != null){
+            games = Jsoup.parse(savedInstanceState.getString("gamesSerialized"))
+                    .select("a.game_button");
+            setAdapter();
+            return;
+        }
+
+        loadGames();
     }
 
-    /*
-    TODO:Fix swiperefresh is search mode
-    TODO:Datetime in y axis of charts, charts dark theme
-    TODO:Inventory search, inventory filters (Chips?) (show only Tradeable & Marketable)
-    */
+    private void loadGames(){
+        new Thread(() -> {
+            try{
+                RequestManager requestManager = new RequestManager(
+                        new AuthModel(getApplicationContext()));
+
+                Response response = requestManager.getClient()
+                        .newCall(requestManager.buildRequest(
+                                "https://steamcommunity.com/market/",
+                                "")).execute();
+
+                Document document = Jsoup.parse(response.body().string());
+
+                games = document.select("a.game_button");
+
+                runOnUiThread(this::setAdapter);
+            }
+            catch (Exception e){
+                Log.e(LOG_TAG, e.getMessage());
+            }
+        }).start();
+    }
+
+    private void setAdapter(){
+        gamesRecyclerView.setAdapter(new GamesRecyclerViewAdapter(
+                this, games, gamesRecyclerView));
+    }
+
+    private void loadWalletBalance(CircularProgressIndicator balanceLoader, TextView inventoryBalanceTextView){
+        new Thread(() -> {
+            InventoryManager inventoryManager = new InventoryManager(new AuthModel(getApplicationContext()));
+            String balance = inventoryManager.getWalletBalance();
+
+            try{
+                if (balance == null || balance.equals("")){
+                    runOnUiThread(() -> {
+                        balanceLoader.setVisibility(View.GONE);
+                        inventoryBalanceTextView.setText(String.format(getResources().getString(R.string.wallet_balance), "null"));
+                    });
+                    return;
+                }
+
+                runOnUiThread(() -> {
+                    balanceLoader.setVisibility(View.GONE);
+                    inventoryBalanceTextView.setText(String.format(getResources().getString(R.string.wallet_balance), balance));
+                });
+            }
+            catch (Exception ignored){}
+        }).start();
+    }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("inventorySerialized", new Gson().toJson(loadedInventory));
-        outState.putParcelable("inventoryRecyclerSavedState", inventoryRecyclerViewSavedState);
-        outState.putString("marketSerialized", new Gson().toJson(loadedMarket));
-        outState.putParcelable("marketRecyclerSavedState", marketRecyclerViewSavedState);
+        try{
+            outState.putString("gamesSerialized", games.outerHtml());
+            outState.putParcelable("gamesRecyclerSavedState", gamesRecyclerView
+                    .getLayoutManager().onSaveInstanceState());
+        }
+        catch (Exception e){
+            Log.e(LOG_TAG, "Failed onSaveInstanceState in MainActivity: " + e.getMessage());
+        }
     }
 }

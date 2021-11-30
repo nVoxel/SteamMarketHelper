@@ -3,6 +3,8 @@ package com.voxeldev.steammarkethelper.models.auth;
 import android.content.Context;
 import android.util.Log;
 
+import com.voxeldev.steammarkethelper.MainActivity;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -36,7 +38,7 @@ public class AuthModel {
 
             return response.body().string().contains("https://steamcommunity.com/login/home");
         }
-        catch (Exception e){ Log.e("SMH", e.toString()); }
+        catch (Exception e){ Log.e(MainActivity.LOG_TAG, e.toString()); }
 
         return true;
     }

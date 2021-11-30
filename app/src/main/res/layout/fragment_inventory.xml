@@ -4,56 +4,13 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/inventory_balance_cardview"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:foreground="?android:attr/selectableItemBackground"
-        app:cardBackgroundColor="@color/BottomNav"
-        app:cardElevation="0dp"
-        app:cardCornerRadius="10dp"
-        app:cardUseCompatPadding="true"
-        app:strokeWidth="1dp"
-        app:strokeColor="@color/CardStroke"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="12dp">
-
-            <TextView
-                android:id="@+id/inventory_balance_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/wallet_balance_not_set"
-                android:textColor="@color/textColor"
-                android:textSize="22sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:id="@+id/inventory_balance_loader"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:indeterminate="true"
-                app:indicatorSize="18dp"
-                app:trackThickness="2dp"
-                app:layout_constraintBottom_toBottomOf="@id/inventory_balance_textview"
-                app:layout_constraintStart_toEndOf="@id/inventory_balance_textview"
-                app:layout_constraintTop_toTopOf="@id/inventory_balance_textview" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inventory_balance_cardview">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/inventory_swiperefresh"

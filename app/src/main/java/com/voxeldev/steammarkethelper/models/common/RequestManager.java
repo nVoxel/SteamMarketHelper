@@ -5,7 +5,7 @@ import com.voxeldev.steammarkethelper.models.auth.AuthModel;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
-public abstract class RequestManager {
+public class RequestManager {
     private final OkHttpClient client;
     private final AuthModel authModel;
 

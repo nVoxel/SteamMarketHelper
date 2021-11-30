@@ -1,19 +1,18 @@
 package com.voxeldev.steammarkethelper.models.market;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import androidx.room.Room;
 
 import com.google.gson.Gson;
+import com.voxeldev.steammarkethelper.MainActivity;
 import com.voxeldev.steammarkethelper.models.auth.AuthModel;
 import com.voxeldev.steammarkethelper.models.common.RequestManager;
 import com.voxeldev.steammarkethelper.models.db.NameIdDao;
 import com.voxeldev.steammarkethelper.models.db.NameIdDb;
 import com.voxeldev.steammarkethelper.models.db.NameIdPair;
 
-import java.io.IOException;
 import java.util.Locale;
 
 import okhttp3.Request;
@@ -21,11 +20,13 @@ import okhttp3.Response;
 
 public class MarketManager extends RequestManager {
 
-    NameIdDb database;
+    private final NameIdDb database;
+    private final int gameId;
 
-    public MarketManager(Context context) {
+    public MarketManager(Context context, int gameId) {
         super(new AuthModel(context));
         database = Room.databaseBuilder(context, NameIdDb.class, "nameIdDb").build();
+        this.gameId = gameId;
     }
 
     public MarketModel getMarketModel(int start, int count, int appId, String searchQuery){
@@ -42,7 +43,7 @@ public class MarketManager extends RequestManager {
             return gson.fromJson(response.body().string(), MarketModel.class);
         }
         catch (Exception e){
-            Log.d("SMH", e.toString());
+            Log.d(MainActivity.LOG_TAG, e.toString());
             return null;
         }
     }
@@ -67,7 +68,7 @@ public class MarketManager extends RequestManager {
             MarketItemCommodityModel marketItemCommodityModel = loadItemCommodity(id);
 
             if (marketItemCommodityModel == null){ //Seems itemId in our db is not valid
-                Log.e("SMH", "itemId is not valid: " + name);
+                Log.e(MainActivity.LOG_TAG, "itemId is not valid: " + name);
                 id = loadItemId(name);
                 nameIdPair.nameId = id;
                 nameIdDao.updateNameId(nameIdPair);
@@ -79,7 +80,7 @@ public class MarketManager extends RequestManager {
             return marketItemCommodityModel;
         } catch (Exception e) {
             database.close();
-            Log.e("SMH", e.toString());
+            Log.e(MainActivity.LOG_TAG, e.toString());
             return null;
         }
     }
@@ -93,7 +94,7 @@ public class MarketManager extends RequestManager {
 
             return new Gson().fromJson(response.body().string(), MarketItemCommodityModel.class);
         } catch (Exception e) {
-            Log.e("SMH", e.toString());
+            Log.e(MainActivity.LOG_TAG, e.toString());
             return null;
         }
     }
@@ -101,7 +102,10 @@ public class MarketManager extends RequestManager {
     public MarketItemPriceHistory loadItemPriceHistory(String name){
         try{
             Request request = buildRequest(
-                    "https://steamcommunity.com/market/pricehistory/?country=RU&currency=3&appid=252490&market_hash_name=" + name,
+                    String.format(
+                            Locale.getDefault(),
+                            "https://steamcommunity.com/market/pricehistory/?country=RU&currency=3&appid=%d&market_hash_name=%s",
+                            gameId, name),
                     getAuthModel().loadCookie()
             );
             Response response = getClient().newCall(request).execute();
@@ -109,14 +113,14 @@ public class MarketManager extends RequestManager {
             return new Gson().fromJson(response.body().string(), MarketItemPriceHistory.class);
         }
         catch (Exception e){
-            Log.e("SMH", e.toString());
+            Log.e(MainActivity.LOG_TAG, e.toString());
             return null;
         }
     }
 
     private String loadItemId(String name) throws Exception {
         Request idRequest = buildRequest(String.format(Locale.getDefault(),
-                "https://steamcommunity.com/market/listings/252490/%s", name),
+                "https://steamcommunity.com/market/listings/%d/%s", gameId, name),
                 "webTradeEligibility=%7B%22allowed%22%3A1%2C%22allowed_at_time%22%3A0%2C%22steamguard_required_days%22%3A15%2C%22new_device_cooldown_days%22%3A7%2C%22time_checked%22%3A1620583359%7D;" + getAuthModel().loadCookie());
         Response idResponse = getClient().newCall(idRequest).execute();
 

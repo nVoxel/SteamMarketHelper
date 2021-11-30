@@ -18,11 +18,4 @@
         android:label="@string/market"
         tools:layout="@layout/fragment_market" >
     </fragment>
-
-    <fragment
-        android:id="@+id/navigation_settings"
-        android:name="com.voxeldev.steammarkethelper.ui.settings.SettingsFragment"
-        android:label="@string/settings"
-        tools:layout="@layout/fragment_settings" >
-    </fragment>
 </navigation>

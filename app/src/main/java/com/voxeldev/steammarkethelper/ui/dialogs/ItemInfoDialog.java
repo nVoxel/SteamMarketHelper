@@ -3,7 +3,6 @@ package com.voxeldev.steammarkethelper.ui.dialogs;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,6 +28,8 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
+import com.voxeldev.steammarkethelper.MainActivity;
+import com.voxeldev.steammarkethelper.MarketActivity;
 import com.voxeldev.steammarkethelper.R;
 import com.voxeldev.steammarkethelper.models.common.ActionModel;
 import com.voxeldev.steammarkethelper.models.inventory.InventoryItemModel;
@@ -130,8 +131,8 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
     }
 
     private void getPriceChart(LineChart priceChart){
-        Thread getPriceChartDataThread = new Thread(() -> {
-            MarketManager marketManager = new MarketManager(requireContext());
+        new Thread(() -> {
+            MarketManager marketManager = new MarketManager(requireContext(), ((MarketActivity)requireActivity()).gameId);
             MarketItemPriceHistory priceHistory = marketManager.loadItemPriceHistory(name);
 
             if (priceHistory == null || priceHistory.prices == null || priceHistory.prices.size() < 1){
@@ -160,18 +161,15 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
             priceChart.setData(new LineData(priceDataSet));
             priceChart.setMarker(new ChartMarkerView(requireContext(), R.layout.markerview, priceHistory, priceChart));
             priceChart.invalidate();
-        });
-
-        getPriceChartDataThread.start();
+        }).start();
     }
 
     private void getCommodity(View root){
-        Thread getCommodityThread = new Thread(() -> {
-            MarketManager marketManager = new MarketManager(requireContext());
+        new Thread(() -> {
+            MarketManager marketManager = new MarketManager(requireContext(), ((MarketActivity)requireActivity()).gameId);
             model = marketManager.getItemCommodity(name);
             setCommodity(root);
-        });
-        getCommodityThread.start();
+        }).start();
     }
 
     private void checkWorkshopButton(List<ActionModel> actions, MaterialButton workshopButton){
@@ -190,7 +188,12 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
         button.setVisibility(View.VISIBLE);
         button.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(workshopLink));
-            startActivity(intent);
+            try{
+                startActivity(intent);
+            }
+            catch (Exception e){
+                Log.e(MainActivity.LOG_TAG, "Failed to open workshop link: " + e.getMessage());
+            }
         });
     }
 
@@ -223,7 +226,7 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
                 root.findViewById(R.id.iteminfo_listings).setVisibility(View.VISIBLE);
             });
         }
-        catch (Exception e) { Log.e("SMH", e.toString()); }
+        catch (Exception e) { Log.e(MainActivity.LOG_TAG, e.toString()); }
     }
 
     private void addOrdersToTable(Activity activity, TableLayout tableLayout, List<MarketOrderModel> orders){

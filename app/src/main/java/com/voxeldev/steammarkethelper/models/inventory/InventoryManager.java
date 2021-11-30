@@ -3,6 +3,7 @@ package com.voxeldev.steammarkethelper.models.inventory;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.voxeldev.steammarkethelper.MainActivity;
 import com.voxeldev.steammarkethelper.models.auth.AuthModel;
 import com.voxeldev.steammarkethelper.models.common.RequestManager;
 
@@ -32,7 +33,7 @@ public class InventoryManager extends RequestManager {
             return new Gson().fromJson(response.body().string(), InventoryModel.class);
         }
         catch (Exception e){
-            Log.e("SMH", e.toString());
+            Log.e(MainActivity.LOG_TAG, e.toString());
             return null;
         }
     }
@@ -51,7 +52,7 @@ public class InventoryManager extends RequestManager {
 
             return balance.text();
         }
-        catch (Exception e){ Log.e("SMH", e.toString()); }
+        catch (Exception e){ Log.e(MainActivity.LOG_TAG, e.toString()); }
         return null;
     }
 
@@ -68,7 +69,7 @@ public class InventoryManager extends RequestManager {
             return cookie.substring(index1 + findStr.length(), index2);
         }
         catch (Exception e){
-            Log.e("SMH", e.toString());
+            Log.e(MainActivity.LOG_TAG, e.toString());
             return null;
         }
     }
