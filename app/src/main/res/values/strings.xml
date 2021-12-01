@@ -20,4 +20,8 @@
     <string name="wallet_balance">Wallet balance: %1$s</string>
     <string name="tradeban_days">%1$dD</string>
     <string name="tradeban_hours">%1$dH</string>
+    <string name="add_favorites">Added %1$s to favorites</string>
+    <string name="remove_favorites">Removed %1$s from favorites</string>
+    <string name="hint">Select a game. Long click to add game to favorites.</string>
+    <string name="game_icon">Game icon</string>
 </resources>

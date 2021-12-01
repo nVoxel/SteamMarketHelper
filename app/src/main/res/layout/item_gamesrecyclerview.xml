@@ -12,14 +12,36 @@
     app:cardUseCompatPadding="true"
     app:strokeWidth="1dp"
     app:strokeColor="@color/CardStroke">
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/gamesrecyclerview_gametextview"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:drawableLeft="@tools:sample/avatars"
-        tools:text="Counter-Strike : Global Offensive"
-        android:padding="10dp"
-        android:textSize="20sp"
-        android:drawablePadding="10dp"
-        android:gravity="center" />
+        android:padding="10dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/gamesrecyclerview_gametextview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:drawablePadding="10dp"
+            android:gravity="center"
+            android:textColor="@color/textColor"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/gamesrecyclerview_starimageview"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:drawableLeft="@tools:sample/avatars"
+            tools:text="Counter-Strike : Global Offensive" />
+
+        <ImageView
+            android:id="@+id/gamesrecyclerview_starimageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_star"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/game_icon" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

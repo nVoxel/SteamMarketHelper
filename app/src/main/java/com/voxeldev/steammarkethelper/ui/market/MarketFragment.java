@@ -132,6 +132,9 @@ public class MarketFragment extends Fragment {
     }
 
     private void updateMarketQuery(String query){
+        if (loadedMarket == null) {
+            return;
+        }
         loadedMarket.query = query;
         loadedMarket.start = 0;
         loadedMarket.results = new ArrayList<>();

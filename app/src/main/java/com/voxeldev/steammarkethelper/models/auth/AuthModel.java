@@ -4,25 +4,22 @@ import android.content.Context;
 import android.util.Log;
 
 import com.voxeldev.steammarkethelper.MainActivity;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.util.Scanner;
+import com.voxeldev.steammarkethelper.models.common.CacheModel;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 public class AuthModel {
+
     private final OkHttpClient client;
     private final Context context;
+    private CacheModel cacheModel;
 
     public AuthModel(Context context){
         this.context = context;
         client = new OkHttpClient();
+        cacheModel = new CacheModel(context);
     }
 
     public boolean checkAuth(String cookie){
@@ -44,29 +41,10 @@ public class AuthModel {
     }
 
     public void saveCookie(String cookie) throws Exception {
-        File file = new File(context.getFilesDir().getPath() + "/cookie.smh");
-        file.getParentFile().mkdirs();
-        BufferedWriter writer = new BufferedWriter(new FileWriter(file, false));
-        writer.write(cookie);
-        writer.close();
+        cacheModel.writeToFile("cookie.smh", cookie);
     }
 
     public String loadCookie() throws Exception {
-        File file = new File(context.getFilesDir().getPath() + "/cookie.smh");
-        if (file.exists()){
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            StringBuilder stringBuilder = new StringBuilder();
-
-            Scanner scanner = new Scanner(reader);
-            while (scanner.hasNextLine()){
-                stringBuilder.append(scanner.nextLine());
-            }
-            scanner.close();
-
-            return stringBuilder.toString();
-        }
-        else{
-            return null;
-        }
+        return cacheModel.readFile("cookie.smh");
     }
 }
