@@ -34,11 +34,11 @@ public class MarketActivity extends AppCompatActivity {
         BottomNavigationView navView = findViewById(R.id.nav_view);
         NavController navController = Navigation
                 .findNavController(this, R.id.nav_host_fragment);
-
         NavigationUI.setupWithNavController(navView, navController);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null){
+            actionBar.setTitle(getIntent().getStringExtra("gameName"));
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 

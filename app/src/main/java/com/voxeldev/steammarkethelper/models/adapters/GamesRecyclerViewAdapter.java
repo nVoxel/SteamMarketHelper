@@ -97,8 +97,8 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
                 .inflate(R.layout.item_gamesrecyclerview, parent, false);
         view.setOnClickListener(clickView -> {
             try{
-                String url = games.get(recyclerView.getChildLayoutPosition(clickView))
-                        .attr("href");
+                Element game = games.get(recyclerView.getChildLayoutPosition(clickView));
+                String url = game.attr("href");
                 String keyString = "appid=";
 
                 int gameId = Integer.parseInt(
@@ -106,6 +106,7 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
 
                 Intent intent = new Intent(context, MarketActivity.class)
                         .putExtra("gameId", gameId)
+                        .putExtra("gameName", game.text())
                         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
                 activity.overridePendingTransition(R.anim.left_in, R.anim.right_out);

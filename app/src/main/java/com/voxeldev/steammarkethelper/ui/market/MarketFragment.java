@@ -40,8 +40,6 @@ public class MarketFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_market, container, false);
         setHasOptionsMenu(true);
 
-
-
         customSwipeRefresh = root.findViewById(R.id.market_swiperefresh);
         customSwipeRefresh.setOnRefreshListener(direction -> {
             loadedMarket = null;
