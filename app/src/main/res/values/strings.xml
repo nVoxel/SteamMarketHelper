@@ -24,4 +24,11 @@
     <string name="remove_favorites">Removed %1$s from favorites</string>
     <string name="hint">Select a game. Long click to add game to favorites.</string>
     <string name="game_icon">Game icon</string>
+    <string name="listings">Listings</string>
+    <string name="theme">Theme</string>
+    <string name="select_theme">Choose UI theme</string>
+    <string name="system_default">System default</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <string name="ui">UI</string>
 </resources>

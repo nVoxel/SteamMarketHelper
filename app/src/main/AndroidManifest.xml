@@ -24,7 +24,7 @@
         <activity
             android:name=".MarketActivity" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".ui.settings.SettingsActivity"
             android:label="@string/settings" />
         <activity
             android:name=".AuthActivity"

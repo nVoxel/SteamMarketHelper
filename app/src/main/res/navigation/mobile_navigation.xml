@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_inventory" >
+    app:startDestination="@+id/navigation_market" >
 
     <fragment
         android:id="@+id/navigation_inventory"
@@ -17,5 +17,12 @@
         android:name="com.voxeldev.steammarkethelper.ui.market.MarketFragment"
         android:label="@string/market"
         tools:layout="@layout/fragment_market" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_listings"
+        android:name="com.voxeldev.steammarkethelper.ui.listings.ListingsFragment"
+        android:label="@string/listings"
+        tools:layout="@layout/fragment_listings" >
     </fragment>
 </navigation>

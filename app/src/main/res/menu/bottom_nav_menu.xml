@@ -11,4 +11,9 @@
         android:icon="@drawable/ic_market"
         android:title="@string/market" />
 
+    <item
+        android:id="@+id/navigation_listings"
+        android:icon="@drawable/ic_list"
+        android:title="@string/listings" />
+
 </menu>

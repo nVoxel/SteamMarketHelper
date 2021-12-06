@@ -1,6 +1,7 @@
 package com.voxeldev.steammarkethelper;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -10,7 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.Slide;
@@ -23,6 +26,7 @@ import com.voxeldev.steammarkethelper.models.adapters.GamesRecyclerViewAdapter;
 import com.voxeldev.steammarkethelper.models.auth.AuthModel;
 import com.voxeldev.steammarkethelper.models.common.RequestManager;
 import com.voxeldev.steammarkethelper.models.inventory.InventoryManager;
+import com.voxeldev.steammarkethelper.ui.settings.SettingsActivity;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -46,6 +50,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(getApplicationContext());
+        String theme = sharedPreferences.getString("theme", "system");
+        setTheme(theme);
+
         setContentView(R.layout.activity_main);
 
         MaterialButton settingsButton = findViewById(R.id.settings_button);
@@ -84,16 +94,21 @@ public class MainActivity extends AppCompatActivity {
         gamesRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
         if (savedInstanceState != null){
-            games = Jsoup.parse(savedInstanceState.getString("gamesSerialized"))
-                    .select("a.game_button");
-            setAdapter();
-            return;
+            try{
+                games = Jsoup.parse(savedInstanceState.getString("gamesSerialized"))
+                        .select("a.game_button");
+                setAdapter();
+                return;
+            }
+            catch (Exception e){
+                Log.e(LOG_TAG, "Failed to load instanceState: " + e.getMessage());
+            }
         }
 
         loadGames();
     }
 
-    private void loadGames(){
+    private void loadGames() {
         new Thread(() -> {
             try{
                 RequestManager requestManager = new RequestManager(
@@ -116,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void setAdapter(){
+    private void setAdapter() {
         gamesRecyclerView.setAdapter(new GamesRecyclerViewAdapter(
                 this, games, gamesRecyclerView));
 
@@ -133,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         gamesLayout.setVisibility(View.VISIBLE);
     }
 
-    private void loadWalletBalance(CircularProgressIndicator balanceLoader, TextView inventoryBalanceTextView){
+    private void loadWalletBalance(CircularProgressIndicator balanceLoader, TextView inventoryBalanceTextView) {
         new Thread(() -> {
             InventoryManager inventoryManager = new InventoryManager(new AuthModel(getApplicationContext()));
             String balance = inventoryManager.getWalletBalance();
@@ -154,6 +169,20 @@ public class MainActivity extends AppCompatActivity {
             }
             catch (Exception ignored){}
         }).start();
+    }
+
+    public static void setTheme(String theme){
+        switch (theme) {
+            case "light":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                break;
+            case "dark":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                break;
+            default:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                break;
+        }
     }
 
     @Override

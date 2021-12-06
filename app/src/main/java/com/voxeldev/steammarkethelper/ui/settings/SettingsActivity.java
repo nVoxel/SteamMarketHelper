@@ -1,4 +1,4 @@
-package com.voxeldev.steammarkethelper;
+package com.voxeldev.steammarkethelper.ui.settings;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.voxeldev.steammarkethelper.R;
 
 public class SettingsActivity extends AppCompatActivity {
     @Override
@@ -18,6 +20,11 @@ public class SettingsActivity extends AppCompatActivity {
         if (actionBar != null){
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.settings_container, new SettingsFragment())
+                .commit();
     }
 
     @Override
