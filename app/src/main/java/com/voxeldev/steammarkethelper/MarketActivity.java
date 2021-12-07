@@ -13,22 +13,32 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.voxeldev.steammarkethelper.models.inventory.InventoryModel;
+import com.voxeldev.steammarkethelper.models.listings.ListingModel;
 import com.voxeldev.steammarkethelper.models.market.MarketModel;
+
+import java.util.List;
 
 public class MarketActivity extends AppCompatActivity {
 
     public int gameId;
+    public String gameName;
     public InventoryModel loadedInventory;
     public Parcelable inventoryRecyclerViewSavedState;
     public MarketModel loadedMarket;
     public Parcelable marketRecyclerViewSavedState;
+    public List<ListingModel> loadedSellListings;
+    public List<ListingModel> loadedBuyOrders;
+    public Parcelable sellRecyclerViewSavedState;
+    public Parcelable buyRecyclerViewSavedState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         gameId = getIntent().getIntExtra("gameId", 0);
+        gameName = getIntent().getStringExtra("gameName");
 
         setContentView(R.layout.activity_market);
         BottomNavigationView navView = findViewById(R.id.nav_view);
@@ -38,19 +48,31 @@ public class MarketActivity extends AppCompatActivity {
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null){
-            actionBar.setTitle(getIntent().getStringExtra("gameName"));
+            actionBar.setTitle(gameName);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
         if (savedInstanceState != null) {
-            loadedInventory = new Gson().fromJson(
+            Gson gson = new Gson();
+
+            loadedInventory = gson.fromJson(
                     savedInstanceState.getString("inventorySerialized"), InventoryModel.class);
             inventoryRecyclerViewSavedState = savedInstanceState
                     .getParcelable("inventoryRecyclerSavedState");
-            loadedMarket = new Gson().fromJson(
+            loadedMarket = gson.fromJson(
                     savedInstanceState.getString("marketSerialized"), MarketModel.class);
             marketRecyclerViewSavedState = savedInstanceState
                     .getParcelable("marketRecyclerSavedState");
+            loadedSellListings = gson.fromJson(
+                    savedInstanceState.getString("sellListingsSerialized"),
+                    new TypeToken<List<ListingModel>>(){}.getType());
+            loadedBuyOrders = gson.fromJson(
+                    savedInstanceState.getString("buyOrdersSerialized"),
+                    new TypeToken<List<ListingModel>>(){}.getType());
+            sellRecyclerViewSavedState = savedInstanceState
+                    .getParcelable("sellRecyclerSavedState");
+            buyRecyclerViewSavedState = savedInstanceState
+                    .getParcelable("buyRecyclerSavedState");
         }
     }
 
@@ -73,9 +95,16 @@ public class MarketActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("inventorySerialized", new Gson().toJson(loadedInventory));
+
+        Gson gson = new Gson();
+
+        outState.putString("inventorySerialized", gson.toJson(loadedInventory));
         outState.putParcelable("inventoryRecyclerSavedState", inventoryRecyclerViewSavedState);
-        outState.putString("marketSerialized", new Gson().toJson(loadedMarket));
+        outState.putString("marketSerialized", gson.toJson(loadedMarket));
         outState.putParcelable("marketRecyclerSavedState", marketRecyclerViewSavedState);
+        outState.putString("sellListingsSerialized", gson.toJson(loadedSellListings));
+        outState.putString("buyOrdersSerialized", gson.toJson(loadedBuyOrders));
+        outState.putParcelable("sellRecyclerSavedState", sellRecyclerViewSavedState);
+        outState.putParcelable("buyRecyclerSavedState", buyRecyclerViewSavedState);
     }
 }

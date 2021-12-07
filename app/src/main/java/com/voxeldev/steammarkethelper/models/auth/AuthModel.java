@@ -13,11 +13,9 @@ import okhttp3.Response;
 public class AuthModel {
 
     private final OkHttpClient client;
-    private final Context context;
     private CacheModel cacheModel;
 
     public AuthModel(Context context){
-        this.context = context;
         client = new OkHttpClient();
         cacheModel = new CacheModel(context);
     }

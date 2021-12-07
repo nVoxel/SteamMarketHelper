@@ -77,7 +77,7 @@ public class MarketFragment extends Fragment {
             return root;
         }
 
-        MarketActivity marketActivity = (MarketActivity)requireActivity();
+        MarketActivity marketActivity = (MarketActivity) requireActivity();
         if (marketActivity.loadedMarket != null && marketActivity.marketRecyclerViewSavedState != null){
             loadedMarket = marketActivity.loadedMarket;
             replaceAdapter();

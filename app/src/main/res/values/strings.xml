@@ -31,4 +31,8 @@
     <string name="light">Light</string>
     <string name="dark">Dark</string>
     <string name="ui">UI</string>
+    <string name="my_sell_listings">My sell listings</string>
+    <string name="my_buy_orders">My buy orders</string>
+    <string name="listed_on">Listed on: %1$s</string>
+    <string name="quantity">Quantity: %1$s</string>
 </resources>

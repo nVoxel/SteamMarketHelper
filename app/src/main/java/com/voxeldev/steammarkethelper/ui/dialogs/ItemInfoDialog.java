@@ -33,6 +33,7 @@ import com.voxeldev.steammarkethelper.MarketActivity;
 import com.voxeldev.steammarkethelper.R;
 import com.voxeldev.steammarkethelper.models.common.ActionModel;
 import com.voxeldev.steammarkethelper.models.inventory.InventoryItemModel;
+import com.voxeldev.steammarkethelper.models.listings.ListingModel;
 import com.voxeldev.steammarkethelper.models.market.MarketItemCommodityModel;
 import com.voxeldev.steammarkethelper.models.market.MarketItemModel;
 import com.voxeldev.steammarkethelper.models.market.MarketItemPriceHistory;
@@ -53,8 +54,9 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
     private List<ActionModel> actions;
     private String workshopLink;
     private String name;
+    private static final String iconUrlPrefix = "https://community.akamai.steamstatic.com/economy/image/";
 
-    public static ItemInfoDialog newInventoryInstance(InventoryItemModel inventoryItem){
+    public static ItemInfoDialog newInventoryInstance(InventoryItemModel inventoryItem) {
         Bundle args = new Bundle();
         args.putInt("type", 0);
         args.putString("item", new Gson().toJson(inventoryItem));
@@ -63,10 +65,19 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
         return itemInfoDialog;
     }
 
-    public static ItemInfoDialog newMarketInstance(MarketItemModel marketItem){
+    public static ItemInfoDialog newMarketInstance(MarketItemModel marketItem) {
         Bundle args = new Bundle();
         args.putInt("type", 1);
         args.putString("item", new Gson().toJson(marketItem));
+        ItemInfoDialog itemInfoDialog = new ItemInfoDialog();
+        itemInfoDialog.setArguments(args);
+        return itemInfoDialog;
+    }
+
+    public static ItemInfoDialog newListingsInstance(ListingModel listingModel) {
+        Bundle args = new Bundle();
+        args.putInt("type", 2);
+        args.putString("item", new Gson().toJson(listingModel));
         ItemInfoDialog itemInfoDialog = new ItemInfoDialog();
         itemInfoDialog.setArguments(args);
         return itemInfoDialog;
@@ -89,7 +100,7 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
             if (!modelSerialized.contentEquals("null") && !iconUrl.contentEquals("null") && !name.contentEquals("null")){
                 model = new Gson().fromJson(modelSerialized, MarketItemCommodityModel.class);
                 Glide.with(requireContext())
-                        .load("https://community.akamai.steamstatic.com/economy/image/" + iconUrl)
+                        .load(iconUrl)
                         .into((ImageView)root.findViewById(R.id.iteminfo_imageview));
                 ((TextView)root.findViewById(R.id.iteminfo_itemtitle)).setText(name);
                 if (workshopLink != null){ setWorkshopButtonLink(workshopButton); }
@@ -100,21 +111,32 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
 
         switch (args.getInt("type", 0)){
             case 0:
-                InventoryItemModel inventoryItem = new Gson().fromJson(getArguments().getString("item"), InventoryItemModel.class);
-                iconUrl = inventoryItem.icon_url;
+                InventoryItemModel inventoryItem = new Gson().fromJson(
+                        getArguments().getString("item"),
+                        InventoryItemModel.class);
+                iconUrl = iconUrlPrefix + inventoryItem.icon_url;
                 name = inventoryItem.name;
                 actions = inventoryItem.actions;
                 break;
             case 1:
-                MarketItemModel marketItem = new Gson().fromJson(getArguments().getString("item"), MarketItemModel.class);
-                iconUrl = marketItem.asset_description.icon_url;
+                MarketItemModel marketItem = new Gson().fromJson(
+                        getArguments().getString("item"),
+                        MarketItemModel.class);
+                iconUrl = iconUrlPrefix + marketItem.asset_description.icon_url;
                 name = marketItem.name;
                 actions = marketItem.asset_description.actions;
+                break;
+            case 2:
+                ListingModel listingModel = new Gson().fromJson(
+                        getArguments().getString("item"),
+                        ListingModel.class);
+                iconUrl = listingModel.iconUrl;
+                name = listingModel.name;
                 break;
         }
 
         Glide.with(requireContext())
-                .load("https://community.akamai.steamstatic.com/economy/image/" + iconUrl)
+                .load(iconUrl)
                 .into((ImageView)root.findViewById(R.id.iteminfo_imageview));
         ((TextView)root.findViewById(R.id.iteminfo_itemtitle)).setText(name);
 

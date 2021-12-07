@@ -18,12 +18,13 @@
         <entry key="..\:/Users/agent/AndroidStudioProjects/SteamMarketHelper/app/src/main/res/layout/activity_settings.xml" value="0.13072916666666667" />
         <entry key="..\:/Users/agent/AndroidStudioProjects/SteamMarketHelper/app/src/main/res/layout/dialog_iteminfo.xml" value="0.2" />
         <entry key="..\:/Users/agent/AndroidStudioProjects/SteamMarketHelper/app/src/main/res/layout/fragment_inventory.xml" value="0.24682971014492755" />
-        <entry key="..\:/Users/agent/AndroidStudioProjects/SteamMarketHelper/app/src/main/res/layout/fragment_listings.xml" value="0.23596014492753623" />
-        <entry key="..\:/Users/agent/AndroidStudioProjects/SteamMarketHelper/app/src/main/res/layout/fragment_market.xml" value="0.23072916666666668" />
+        <entry key="..\:/Users/agent/AndroidStudioProjects/SteamMarketHelper/app/src/main/res/layout/fragment_listings.xml" value="0.33" />
+        <entry key="..\:/Users/agent/AndroidStudioProjects/SteamMarketHelper/app/src/main/res/layout/fragment_market.xml" value="0.33" />
         <entry key="..\:/Users/agent/AndroidStudioProjects/SteamMarketHelper/app/src/main/res/layout/fragment_settings.xml" value="0.23072916666666668" />
         <entry key="..\:/Users/agent/AndroidStudioProjects/SteamMarketHelper/app/src/main/res/layout/item_gamesrecyclerview.xml" value="0.33" />
         <entry key="..\:/Users/agent/AndroidStudioProjects/SteamMarketHelper/app/src/main/res/layout/item_gamesrecyclerviewfav.xml" value="0.2078804347826087" />
         <entry key="..\:/Users/agent/AndroidStudioProjects/SteamMarketHelper/app/src/main/res/layout/item_inventoryrecyclerview.xml" value="0.23072916666666668" />
+        <entry key="..\:/Users/agent/AndroidStudioProjects/SteamMarketHelper/app/src/main/res/layout/item_listingsrecyclerview.xml" value="0.33" />
         <entry key="..\:/Users/agent/AndroidStudioProjects/SteamMarketHelper/app/src/main/res/layout/item_marketrecyclerview.xml" value="0.23072916666666668" />
         <entry key="..\:/Users/agent/AndroidStudioProjects/SteamMarketHelper/app/src/main/res/menu/bottom_nav_menu.xml" value="0.2046875" />
         <entry key="..\:/Users/agent/AndroidStudioProjects/SteamMarketHelper/app/src/main/res/menu/options_menu.xml" value="0.2046875" />
