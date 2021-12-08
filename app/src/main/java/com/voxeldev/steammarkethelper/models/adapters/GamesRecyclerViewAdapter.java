@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -135,10 +136,15 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         }
 
         try{
+            Integer width = (int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 40,
+                    context.getResources().getDisplayMetrics());
+
+            //noinspection SuspiciousNameCombination
             Glide.with(context)
                     .load(games.get(position).selectFirst("span.game_button_game_icon img")
                             .attr("src"))
-                    .into(new CustomTarget<Drawable>(100,100) {
+                    .into(new CustomTarget<Drawable>(width, width) {
 
                         @Override
                         public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition)

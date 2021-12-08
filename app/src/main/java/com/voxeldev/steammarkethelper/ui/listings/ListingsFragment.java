@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +28,8 @@ public class ListingsFragment extends Fragment {
     private List<ListingModel> buyOrders;
     private RecyclerView sellRecyclerView;
     private RecyclerView buyRecyclerView;
+    private TextView sellTextView;
+    private TextView buyTextView;
 
     @Nullable
     @Override
@@ -39,6 +42,9 @@ public class ListingsFragment extends Fragment {
         sellRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         buyRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
+        sellTextView = root.findViewById(R.id.listings_sell_textview);
+        buyTextView = root.findViewById(R.id.listings_buy_textview);
+
         if (savedInstanceState != null){
             Gson gson = new Gson();
 
@@ -49,7 +55,7 @@ public class ListingsFragment extends Fragment {
                     savedInstanceState.getString("buyOrdersSerialized"),
                     new TypeToken<List<ListingModel>>(){}.getType());
 
-            setAdapters();
+            setViews();
             return root;
         }
 
@@ -61,7 +67,7 @@ public class ListingsFragment extends Fragment {
             sellListings = marketActivity.loadedSellListings;
             buyOrders = marketActivity.loadedBuyOrders;
 
-            setAdapters();
+            setViews();
 
             sellRecyclerView.getLayoutManager().onRestoreInstanceState(
                     marketActivity.sellRecyclerViewSavedState);
@@ -79,28 +85,34 @@ public class ListingsFragment extends Fragment {
 
     private void loadRecyclerViews() {
         new Thread(() -> {
+            MarketActivity marketActivity = (MarketActivity) requireActivity();
+
             ListingsManager listingsManager = new ListingsManager(requireContext(),
-                    ((MarketActivity)requireActivity()).gameName);
+                    marketActivity.gameName);
 
             sellListings = listingsManager.getSellListings();
             buyOrders = listingsManager.getBuyOrders();
 
-            requireActivity().runOnUiThread(this::setAdapters);
+            marketActivity.runOnUiThread(this::setViews);
         }).start();
     }
 
-    private void setAdapters() {
+    private void setViews() {
         sellRecyclerView.setAdapter(new ListingsRecyclerViewAdapter(
                 requireContext(),
                 sellRecyclerView,
                 getChildFragmentManager(),
                 sellListings));
-
         buyRecyclerView.setAdapter(new ListingsRecyclerViewAdapter(
                 requireContext(),
                 buyRecyclerView,
                 getChildFragmentManager(),
                 buyOrders));
+
+        sellTextView.setText(String.format(getString(R.string.my_sell_listings_placeholder),
+                (sellListings == null) ? 0 : sellListings.size()));
+        buyTextView.setText(String.format(getString(R.string.my_buy_orders_placeholder),
+                (buyOrders == null) ? 0 : buyOrders.size()));
     }
 
     @Override

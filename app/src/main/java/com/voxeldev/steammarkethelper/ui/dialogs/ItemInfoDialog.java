@@ -49,7 +49,6 @@ import java.util.List;
 public class ItemInfoDialog extends BottomSheetDialogFragment {
 
     private MarketItemCommodityModel model;
-    private MarketItemPriceHistory priceHistory;
     private String iconUrl;
     private List<ActionModel> actions;
     private String workshopLink;
@@ -154,7 +153,8 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
 
     private void getPriceChart(LineChart priceChart){
         new Thread(() -> {
-            MarketManager marketManager = new MarketManager(requireContext(), ((MarketActivity)requireActivity()).gameId);
+            try {
+                MarketManager marketManager = new MarketManager(requireContext(), ((MarketActivity)requireActivity()).gameId);
             MarketItemPriceHistory priceHistory = marketManager.loadItemPriceHistory(name);
 
             if (priceHistory == null || priceHistory.prices == null || priceHistory.prices.size() < 1){
@@ -183,6 +183,10 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
             priceChart.setData(new LineData(priceDataSet));
             priceChart.setMarker(new ChartMarkerView(requireContext(), R.layout.markerview, priceHistory, priceChart));
             priceChart.invalidate();
+            }
+            catch (Exception e) {
+                Log.e(MainActivity.LOG_TAG, "Failed to get priceChart: " + e.getMessage());
+            }
         }).start();
     }
 

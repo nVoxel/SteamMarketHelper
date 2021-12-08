@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,9 +111,14 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
                 inventoryItem.name + ((amount > 1) ? " x " + amount : "")
         );
 
+        Integer width = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 100,
+                context.getResources().getDisplayMetrics());
+
+        //noinspection SuspiciousNameCombination
         Glide.with(context)
                 .load("https://community.akamai.steamstatic.com/economy/image/" + inventoryItem.icon_url)
-                .into(new CustomTarget<Drawable>(300, 300) {
+                .into(new CustomTarget<Drawable>(width, width) {
                     @Override
                     public void onResourceReady(@NonNull @NotNull Drawable resource, @Nullable @org.jetbrains.annotations.Nullable Transition<? super Drawable> transition) {
                         ((ViewHolder) holder).getNameTextView().setCompoundDrawablesWithIntrinsicBounds(null, resource, null, null);

@@ -33,6 +33,8 @@
     <string name="ui">UI</string>
     <string name="my_sell_listings">My sell listings</string>
     <string name="my_buy_orders">My buy orders</string>
+    <string name="my_sell_listings_placeholder">My sell listings (%1$d)</string>
+    <string name="my_buy_orders_placeholder">My buy orders (%1$d)</string>
     <string name="listed_on">Listed on: %1$s</string>
     <string name="quantity">Quantity: %1$s</string>
 </resources>
