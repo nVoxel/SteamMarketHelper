@@ -92,7 +92,7 @@ public class ListingsManager extends RequestManager {
     private void loadMarketPage() throws Exception {
         Request marketRequest = buildRequest(
                 "https://steamcommunity.com/market/",
-                "webTradeEligibility=%7B%22allowed%22%3A1%2C%22allowed_at_time%22%3A0%2C%22steamguard_required_days%22%3A15%2C%22new_device_cooldown_days%22%3A7%2C%22time_checked%22%3A1620583359%7D;" + getAuthModel().loadCookie());
+                AuthModel.necessaryMarketCookie + getAuthModel().loadCookie());
 
         Response marketResponse = getClient().newCall(marketRequest).execute();
 

@@ -49,16 +49,19 @@ public class MarketFragment extends Fragment {
         marketRecyclerView = root.findViewById(R.id.market_recyclerview);
 
         FloatingActionButton marketGoTopButton = root.findViewById(R.id.market_goTopButton);
-        marketGoTopButton.setOnClickListener(v -> ((StaggeredGridLayoutManager)marketRecyclerView.getLayoutManager()).scrollToPositionWithOffset(0, 0));
+        marketGoTopButton.setOnClickListener(v -> ((StaggeredGridLayoutManager)marketRecyclerView
+                .getLayoutManager()).scrollToPositionWithOffset(0, 0));
 
-        marketRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        marketRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,
+                StaggeredGridLayoutManager.VERTICAL));
         marketRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull @NotNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (!recyclerView.canScrollVertically(1)){
                     if (loadedMarket.start >= loadedMarket.total_count){
-                        Snackbar.make(root.findViewById(R.id.market_main), "Search completed", Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(root.findViewById(R.id.market_main),
+                                "Search completed", Snackbar.LENGTH_LONG).show();
                         return;
                     }
                     loadMarketToRecyclerView();
@@ -72,7 +75,8 @@ public class MarketFragment extends Fragment {
         });
 
         if (savedInstanceState != null){
-            loadedMarket = new Gson().fromJson(savedInstanceState.getString("marketSerialized"), MarketModel.class);
+            loadedMarket = new Gson().fromJson(
+                    savedInstanceState.getString("marketSerialized"), MarketModel.class);
             replaceAdapter();
             return root;
         }
@@ -81,7 +85,8 @@ public class MarketFragment extends Fragment {
         if (marketActivity.loadedMarket != null && marketActivity.marketRecyclerViewSavedState != null){
             loadedMarket = marketActivity.loadedMarket;
             replaceAdapter();
-            marketRecyclerView.getLayoutManager().onRestoreInstanceState(marketActivity.marketRecyclerViewSavedState);
+            marketRecyclerView.getLayoutManager()
+                    .onRestoreInstanceState(marketActivity.marketRecyclerViewSavedState);
             return root;
         }
 
@@ -98,7 +103,9 @@ public class MarketFragment extends Fragment {
         new Thread(() -> {
             int gameId = ((MarketActivity)requireActivity()).gameId;
             MarketManager marketManager = new MarketManager(requireContext(), gameId);
-            MarketModel model = marketManager.getMarketModel((loadedMarket == null) ? 0 : loadedMarket.start, 20, gameId, (loadedMarket == null || loadedMarket.query == null) ? "" : loadedMarket.query);
+            MarketModel model = marketManager.getMarketModel((loadedMarket == null) ?
+                    0 : loadedMarket.start, 20, gameId,
+                    (loadedMarket == null || loadedMarket.query == null) ? "" : loadedMarket.query);
             if (model == null || model.results == null || model.results.size() == 0) { return; }
 
             if (loadedMarket == null){
@@ -124,7 +131,8 @@ public class MarketFragment extends Fragment {
 
     private void replaceAdapter(){
         Parcelable state = marketRecyclerView.getLayoutManager().onSaveInstanceState();
-        MarketRecyclerViewAdapter adapter = new MarketRecyclerViewAdapter(requireContext(), loadedMarket, marketRecyclerView, getChildFragmentManager());
+        MarketRecyclerViewAdapter adapter = new MarketRecyclerViewAdapter(requireContext(),
+                loadedMarket, marketRecyclerView, getChildFragmentManager());
         marketRecyclerView.setAdapter(adapter);
         marketRecyclerView.getLayoutManager().onRestoreInstanceState(state);
     }
@@ -140,7 +148,8 @@ public class MarketFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull @NotNull Menu menu,
+                                    @NonNull @NotNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.options_menu, menu);
 
@@ -172,7 +181,8 @@ public class MarketFragment extends Fragment {
     public void onPause() {
         super.onPause();
         ((MarketActivity)requireActivity()).loadedMarket = loadedMarket;
-        ((MarketActivity)requireActivity()).marketRecyclerViewSavedState = marketRecyclerView.getLayoutManager().onSaveInstanceState();
+        ((MarketActivity)requireActivity()).marketRecyclerViewSavedState =
+                marketRecyclerView.getLayoutManager().onSaveInstanceState();
     }
 
     @Override

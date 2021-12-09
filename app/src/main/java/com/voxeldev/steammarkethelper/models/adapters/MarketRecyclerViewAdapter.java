@@ -27,7 +27,8 @@ public class MarketRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     private final RecyclerView recyclerView;
     private final FragmentManager fragmentManager;
 
-    public MarketRecyclerViewAdapter(Context context, MarketModel model, RecyclerView recyclerView, FragmentManager fragmentManager){
+    public MarketRecyclerViewAdapter(Context context, MarketModel model,
+                                     RecyclerView recyclerView, FragmentManager fragmentManager){
         this.context = context;
         this.model = model;
         this.recyclerView = recyclerView;
@@ -75,7 +76,9 @@ public class MarketRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         view.setOnClickListener(clickView -> {
             if (fragmentManager.getFragments().size() < 1){
                 try {
-                    ItemInfoDialog itemInfoDialog = ItemInfoDialog.newMarketInstance(model.results.get(recyclerView.getChildLayoutPosition(clickView)));
+                    ItemInfoDialog itemInfoDialog = ItemInfoDialog
+                            .newMarketInstance(model.results.get(
+                                    recyclerView.getChildLayoutPosition(clickView)));
                     itemInfoDialog.showNow(fragmentManager, "marketItemInfoDialog");
                 }
                 catch (Exception e){ Log.e(MainActivity.LOG_TAG, e.toString()); }
@@ -88,7 +91,8 @@ public class MarketRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     public void onBindViewHolder(@NonNull @NotNull RecyclerView.ViewHolder holder, int position) {
         ((ViewHolder)holder).getNameTextView().setText(model.results.get(position).name);
         ((ViewHolder)holder).getPriceTextView().setText(model.results.get(position).sell_price_text);
-        ((ViewHolder)holder).getCountTextView().setText(String.format(context.getResources().getString(R.string.market_count), model.results.get(position).sell_listings));
+        ((ViewHolder)holder).getCountTextView().setText(
+                String.format(context.getResources().getString(R.string.market_count), model.results.get(position).sell_listings));
         Glide.with(context)
                 .load("https://community.akamai.steamstatic.com/economy/image/" +
                         model.results.get(position).asset_description.icon_url)

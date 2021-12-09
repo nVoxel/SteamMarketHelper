@@ -40,7 +40,9 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
     private final FragmentManager fragmentManager;
     private final InventoryModel model;
 
-    public InventoryRecyclerViewAdapter(Context context, Activity activity, RecyclerView recyclerView, FragmentManager fragmentManager, InventoryModel model){
+    public InventoryRecyclerViewAdapter(Context context, Activity activity,
+                                        RecyclerView recyclerView, FragmentManager fragmentManager,
+                                        InventoryModel model){
         this.context = context;
         this.activity = activity;
         this.recyclerView = recyclerView;
@@ -71,7 +73,8 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
     @NonNull
     @NotNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent,
+                                                      int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_inventoryrecyclerview, parent, false);
         view.setOnClickListener(clickView -> {
@@ -80,7 +83,8 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
             if (fragmentManager.getFragments().size() < 1){
                 try {
                     InventoryItemModel inventoryItem = model.descriptions.stream()
-                            .filter(i -> i.classid.contentEquals(model.assets.get(position).classid)).findFirst().orElse(null);
+                            .filter(i -> i.classid.contentEquals(model.assets.get(position).classid))
+                            .findFirst().orElse(null);
                     if (inventoryItem == null){
                         Log.e(MainActivity.LOG_TAG, "Cant display info dialog, item not found");
                         return;
@@ -99,7 +103,8 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
     public void onBindViewHolder(@NonNull @NotNull RecyclerView.ViewHolder holder, int position) {
         InventoryAssetModel inventoryAsset = model.assets.get(position);
         InventoryItemModel inventoryItem = model.descriptions.stream()
-                .filter(i -> i.classid.contentEquals(inventoryAsset.classid)).findFirst().orElse(null);
+                .filter(i -> i.classid.contentEquals(inventoryAsset.classid))
+                .findFirst().orElse(null);
 
         if (inventoryItem == null){
             Log.e(MainActivity.LOG_TAG, "Cant find item to display in models");
@@ -120,13 +125,18 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
                 .load("https://community.akamai.steamstatic.com/economy/image/" + inventoryItem.icon_url)
                 .into(new CustomTarget<Drawable>(width, width) {
                     @Override
-                    public void onResourceReady(@NonNull @NotNull Drawable resource, @Nullable @org.jetbrains.annotations.Nullable Transition<? super Drawable> transition) {
-                        ((ViewHolder) holder).getNameTextView().setCompoundDrawablesWithIntrinsicBounds(null, resource, null, null);
+                    public void onResourceReady(@NonNull @NotNull Drawable resource,
+                                                @Nullable @org.jetbrains.annotations.Nullable Transition<? super Drawable> transition) {
+                        ((ViewHolder) holder).getNameTextView()
+                                .setCompoundDrawablesWithIntrinsicBounds(
+                                        null, resource, null, null);
                     }
 
                     @Override
                     public void onLoadCleared(@Nullable @org.jetbrains.annotations.Nullable Drawable placeholder) {
-                        ((ViewHolder) holder).getNameTextView().setCompoundDrawablesWithIntrinsicBounds(null, placeholder, null, null);
+                        ((ViewHolder) holder).getNameTextView()
+                                .setCompoundDrawablesWithIntrinsicBounds(
+                                        null, placeholder, null, null);
                     }
                 });
 

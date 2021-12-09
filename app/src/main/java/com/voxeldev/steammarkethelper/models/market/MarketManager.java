@@ -89,7 +89,7 @@ public class MarketManager extends RequestManager {
         try{
             Request request = buildRequest(String.format(Locale.getDefault(),
                     "https://steamcommunity.com/market/itemordershistogram?country=RU&language=english&currency=5&item_nameid=%s&two_factor=0&norender=1", id),
-                    "webTradeEligibility=%7B%22allowed%22%3A1%2C%22allowed_at_time%22%3A0%2C%22steamguard_required_days%22%3A15%2C%22new_device_cooldown_days%22%3A7%2C%22time_checked%22%3A1620583359%7D;" + getAuthModel().loadCookie());
+                    AuthModel.necessaryMarketCookie + getAuthModel().loadCookie());
             Response response = getClient().newCall(request).execute();
 
             return new Gson().fromJson(response.body().string(), MarketItemCommodityModel.class);
@@ -121,7 +121,7 @@ public class MarketManager extends RequestManager {
     private String loadItemId(String name) throws Exception {
         Request idRequest = buildRequest(String.format(Locale.getDefault(),
                 "https://steamcommunity.com/market/listings/%d/%s", gameId, name),
-                "webTradeEligibility=%7B%22allowed%22%3A1%2C%22allowed_at_time%22%3A0%2C%22steamguard_required_days%22%3A15%2C%22new_device_cooldown_days%22%3A7%2C%22time_checked%22%3A1620583359%7D;" + getAuthModel().loadCookie());
+                AuthModel.necessaryMarketCookie + getAuthModel().loadCookie());
         Response idResponse = getClient().newCall(idRequest).execute();
 
         String body = idResponse.body().string();

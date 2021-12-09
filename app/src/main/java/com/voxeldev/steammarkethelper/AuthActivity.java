@@ -1,6 +1,7 @@
 package com.voxeldev.steammarkethelper;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.webkit.CookieManager;
 import android.webkit.WebView;
@@ -23,7 +24,8 @@ public class AuthActivity extends AppCompatActivity {
         authWebView.setWebViewClient(new WebViewClient(){
             @Override
             public void onPageFinished(WebView view, String url) {
-                if (!(url.contains("https://steamcommunity.com/id/") || url.contains("https://steamcommunity.com/profiles/"))){ return; }
+                if (!(url.contains("https://steamcommunity.com/id/") ||
+                        url.contains("https://steamcommunity.com/profiles/"))){ return; }
 
                 AuthModel authModel = new AuthModel(getApplicationContext());
                 String cookie = CookieManager.getInstance().getCookie(url);
@@ -38,6 +40,7 @@ public class AuthActivity extends AppCompatActivity {
 
                     try {
                         authModel.saveCookie(cookie);
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         finish();
                     }
                     catch (Exception e){ authWebView.reload(); }

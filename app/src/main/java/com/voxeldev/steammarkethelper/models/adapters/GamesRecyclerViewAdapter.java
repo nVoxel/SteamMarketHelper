@@ -147,15 +147,20 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
                     .into(new CustomTarget<Drawable>(width, width) {
 
                         @Override
-                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition)
+                        public void onResourceReady(@NonNull Drawable resource,
+                                                    @Nullable Transition<? super Drawable>transition)
                         {
-                            ((ViewHolder) holder).getGameTextView().setCompoundDrawablesWithIntrinsicBounds(resource, null, null, null);
+                            ((ViewHolder) holder).getGameTextView()
+                                    .setCompoundDrawablesWithIntrinsicBounds(
+                                            resource, null, null, null);
                         }
 
                         @Override
                         public void onLoadCleared(@Nullable Drawable placeholder)
                         {
-                            ((ViewHolder) holder).getGameTextView().setCompoundDrawablesWithIntrinsicBounds(placeholder, null, null, null);
+                            ((ViewHolder) holder).getGameTextView()
+                                    .setCompoundDrawablesWithIntrinsicBounds(
+                                            placeholder, null, null, null);
                         }
                     });
         }

@@ -2,8 +2,10 @@ package com.voxeldev.steammarkethelper;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
@@ -20,14 +22,16 @@ import androidx.transition.Slide;
 import androidx.transition.Transition;
 import androidx.transition.TransitionManager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.voxeldev.steammarkethelper.models.adapters.GamesRecyclerViewAdapter;
 import com.voxeldev.steammarkethelper.models.auth.AuthModel;
 import com.voxeldev.steammarkethelper.models.common.RequestManager;
-import com.voxeldev.steammarkethelper.models.inventory.InventoryManager;
 import com.voxeldev.steammarkethelper.ui.settings.SettingsActivity;
 
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -36,6 +40,10 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    private TextView profileCardTextView;
+    private CircularProgressIndicator profileCardLoader;
+    private String profileImageUrl;
+    private String profileName;
     private RecyclerView gamesRecyclerView;
     private Elements games;
     public static final String LOG_TAG = "SMH";
@@ -72,29 +80,28 @@ public class MainActivity extends AppCompatActivity {
 
                 if (cookie == null || authModel.checkAuth(cookie)){
                     startActivity(new Intent(getApplicationContext(), AuthActivity.class));
+                    finish();
                 }
             }
             catch (Exception e){
                 Log.e(LOG_TAG, e.getMessage());
                 startActivity(new Intent(getApplicationContext(), AuthActivity.class));
+                finish();
             }
         }).start();
 
-        CircularProgressIndicator inventoryBalanceLoader = findViewById(R.id.balance_loader);
-        TextView inventoryBalanceTextView = findViewById(R.id.balance_textview);
-        findViewById(R.id.balance_cardview).setOnClickListener(v -> {
-            inventoryBalanceTextView.setText(getResources().getString(R.string.wallet_balance_not_set));
-            inventoryBalanceLoader.setVisibility(View.VISIBLE);
-            loadWalletBalance(inventoryBalanceLoader, inventoryBalanceTextView);
-        });
-
-        loadWalletBalance(inventoryBalanceLoader, inventoryBalanceTextView);
+        profileCardTextView = findViewById(R.id.profile_card_textview);
+        profileCardLoader = findViewById(R.id.profile_card_loader);
 
         gamesRecyclerView = findViewById(R.id.games_recyclerview);
         gamesRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
         if (savedInstanceState != null){
             try{
+                profileImageUrl = savedInstanceState.getString("profileImageUrl");
+                profileName = savedInstanceState.getString("profileName");
+                setProfileCard();
+
                 games = Jsoup.parse(savedInstanceState.getString("gamesSerialized"))
                         .select("a.game_button");
                 setAdapter();
@@ -105,10 +112,10 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        loadGames();
+        loadViews();
     }
 
-    private void loadGames() {
+    private void loadViews() {
         new Thread(() -> {
             try{
                 RequestManager requestManager = new RequestManager(
@@ -117,18 +124,56 @@ public class MainActivity extends AppCompatActivity {
                 Response response = requestManager.getClient()
                         .newCall(requestManager.buildRequest(
                                 "https://steamcommunity.com/market/",
-                                "")).execute();
+                                AuthModel.necessaryMarketCookie +
+                                        requestManager.getAuthModel().loadCookie())).execute();
 
                 Document document = Jsoup.parse(response.body().string());
 
+                profileImageUrl = document.selectFirst("span.avatarIcon img")
+                        .attr("src");
+                profileName = document.selectFirst("span#account_pulldown")
+                        .text().replace(" ", "");
                 games = document.select("a.game_button");
 
-                runOnUiThread(this::setAdapter);
+                runOnUiThread(() -> {
+                    setProfileCard();
+                    setAdapter();
+                });
             }
             catch (Exception e){
                 Log.e(LOG_TAG, e.getMessage());
             }
         }).start();
+    }
+
+    private void setProfileCard() {
+        profileCardLoader.setVisibility(View.GONE);
+        profileCardTextView.setText(profileName == null ?
+                getString(R.string.app_name) : profileName);
+
+        if (profileImageUrl == null) {
+            return;
+        }
+
+        Integer width = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 40,
+                getResources().getDisplayMetrics());
+
+        //noinspection SuspiciousNameCombination
+        Glide.with(getApplicationContext())
+                .load(profileImageUrl)
+                .into(new CustomTarget<Drawable>(width, width) {
+                    @Override
+                    public void onResourceReady(@NonNull @NotNull Drawable resource,
+                                                @Nullable com.bumptech.glide.request.transition.Transition<? super Drawable> transition) {
+                        profileCardTextView.setCompoundDrawablesWithIntrinsicBounds(resource, null, null, null);
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable @org.jetbrains.annotations.Nullable Drawable placeholder) {
+                        profileCardTextView.setCompoundDrawablesWithIntrinsicBounds(placeholder, null, null, null);
+                    }
+                });
     }
 
     private void setAdapter() {
@@ -146,29 +191,6 @@ public class MainActivity extends AppCompatActivity {
 
         TransitionManager.beginDelayedTransition(findViewById(R.id.root), transition);
         gamesLayout.setVisibility(View.VISIBLE);
-    }
-
-    private void loadWalletBalance(CircularProgressIndicator balanceLoader, TextView inventoryBalanceTextView) {
-        new Thread(() -> {
-            InventoryManager inventoryManager = new InventoryManager(new AuthModel(getApplicationContext()));
-            String balance = inventoryManager.getWalletBalance();
-
-            try{
-                if (balance == null || balance.equals("")){
-                    runOnUiThread(() -> {
-                        balanceLoader.setVisibility(View.GONE);
-                        inventoryBalanceTextView.setText(String.format(getResources().getString(R.string.wallet_balance), "null"));
-                    });
-                    return;
-                }
-
-                runOnUiThread(() -> {
-                    balanceLoader.setVisibility(View.GONE);
-                    inventoryBalanceTextView.setText(String.format(getResources().getString(R.string.wallet_balance), balance));
-                });
-            }
-            catch (Exception ignored){}
-        }).start();
     }
 
     public static void setTheme(String theme){
@@ -189,6 +211,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         try{
+            outState.putString("profileImageUrl", profileImageUrl);
+            outState.putString("profileName", profileName);
             outState.putString("gamesSerialized", games.outerHtml());
             outState.putParcelable("gamesRecyclerSavedState", gamesRecyclerView
                     .getLayoutManager().onSaveInstanceState());

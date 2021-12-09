@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -49,6 +50,16 @@ public class InventoryFragment extends Fragment {
             inventoryRecyclerView.getLayoutManager().onRestoreInstanceState(state);
             swipeRefreshLayout.setRefreshing(false);
         });
+
+        CircularProgressIndicator inventoryBalanceLoader = root.findViewById(R.id.inventory_balance_loader);
+        TextView inventoryBalanceTextView = root.findViewById(R.id.inventory_balance_textview);
+        root.findViewById(R.id.inventory_balance_cardview).setOnClickListener(v -> {
+            inventoryBalanceTextView.setText(getResources().getString(R.string.wallet_balance_not_set));
+            inventoryBalanceLoader.setVisibility(View.VISIBLE);
+            loadWalletBalance(inventoryBalanceLoader, inventoryBalanceTextView);
+        });
+
+        loadWalletBalance(inventoryBalanceLoader, inventoryBalanceTextView);
 
         FloatingActionButton marketGoTopButton = root.findViewById(R.id.inventory_goTopButton);
         marketGoTopButton.setOnClickListener(v -> ((StaggeredGridLayoutManager)inventoryRecyclerView.getLayoutManager()).scrollToPositionWithOffset(0, 0));
@@ -101,6 +112,29 @@ public class InventoryFragment extends Fragment {
     private void setAdapter(RecyclerView inventoryRecyclerView){
         inventoryRecyclerView.setAdapter(new InventoryRecyclerViewAdapter(
                 requireContext(), requireActivity(), inventoryRecyclerView, getChildFragmentManager(), loadedInventory));
+    }
+
+    private void loadWalletBalance(CircularProgressIndicator balanceLoader, TextView inventoryBalanceTextView) {
+        new Thread(() -> {
+            InventoryManager inventoryManager = new InventoryManager(new AuthModel(requireContext()));
+            String balance = inventoryManager.getWalletBalance();
+
+            try{
+                if (balance == null || balance.equals("")){
+                    requireActivity().runOnUiThread(() -> {
+                        balanceLoader.setVisibility(View.GONE);
+                        inventoryBalanceTextView.setText(String.format(getResources().getString(R.string.wallet_balance), "null"));
+                    });
+                    return;
+                }
+
+                requireActivity().runOnUiThread(() -> {
+                    balanceLoader.setVisibility(View.GONE);
+                    inventoryBalanceTextView.setText(String.format(getResources().getString(R.string.wallet_balance), balance));
+                });
+            }
+            catch (Exception ignored){}
+        }).start();
     }
 
     @Override

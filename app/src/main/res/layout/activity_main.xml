@@ -7,10 +7,9 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/balance_cardview"
+        android:id="@+id/profile_cardview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:foreground="?android:attr/selectableItemBackground"
         app:cardBackgroundColor="@color/BottomNav"
         app:cardElevation="0dp"
         app:cardCornerRadius="10dp"
@@ -25,27 +24,28 @@
             android:layout_height="match_parent"
             android:layout_margin="12dp">
 
-            <TextView
-                android:id="@+id/balance_textview"
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/profile_card_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/wallet_balance_not_set"
                 android:textColor="@color/textColor"
                 android:textSize="22sp"
+                android:gravity="center"
+                android:drawablePadding="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:id="@+id/balance_loader"
+                android:id="@+id/profile_card_loader"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:indeterminate="true"
                 app:indicatorSize="18dp"
                 app:trackThickness="2dp"
-                app:layout_constraintBottom_toBottomOf="@id/balance_textview"
-                app:layout_constraintStart_toEndOf="@id/balance_textview"
-                app:layout_constraintTop_toTopOf="@id/balance_textview" />
+                app:layout_constraintBottom_toBottomOf="@id/profile_card_textview"
+                app:layout_constraintStart_toEndOf="@id/profile_card_textview"
+                app:layout_constraintTop_toTopOf="@id/profile_card_textview" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 
@@ -57,7 +57,7 @@
         app:layout_constraintBottom_toTopOf="@+id/settings_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/balance_cardview">
+        app:layout_constraintTop_toBottomOf="@+id/profile_cardview">
 
         <TextView
             android:id="@+id/hint_textview"
@@ -94,7 +94,7 @@
         app:layout_constraintBottom_toTopOf="@+id/settings_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/balance_cardview" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_cardview" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/settings_button"

@@ -84,7 +84,8 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.dialog_iteminfo, container, false);
         Bundle args = getArguments();
 
@@ -154,7 +155,8 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
     private void getPriceChart(LineChart priceChart){
         new Thread(() -> {
             try {
-                MarketManager marketManager = new MarketManager(requireContext(), ((MarketActivity)requireActivity()).gameId);
+                MarketManager marketManager = new MarketManager(requireContext(),
+                        ((MarketActivity)requireActivity()).gameId);
             MarketItemPriceHistory priceHistory = marketManager.loadItemPriceHistory(name);
 
             if (priceHistory == null || priceHistory.prices == null || priceHistory.prices.size() < 1){
@@ -181,7 +183,8 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
             //priceDataSet.setValueTextColor(textColor);
 
             priceChart.setData(new LineData(priceDataSet));
-            priceChart.setMarker(new ChartMarkerView(requireContext(), R.layout.markerview, priceHistory, priceChart));
+            priceChart.setMarker(new ChartMarkerView(requireContext(), R.layout.markerview,
+                    priceHistory, priceChart));
             priceChart.invalidate();
             }
             catch (Exception e) {
@@ -192,7 +195,8 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
 
     private void getCommodity(View root){
         new Thread(() -> {
-            MarketManager marketManager = new MarketManager(requireContext(), ((MarketActivity)requireActivity()).gameId);
+            MarketManager marketManager = new MarketManager(requireContext(),
+                    ((MarketActivity)requireActivity()).gameId);
             model = marketManager.getItemCommodity(name);
             setCommodity(root);
         }).start();
@@ -240,8 +244,10 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
             Activity activity = requireActivity();
 
             activity.runOnUiThread(() -> {
-                ((TextView)root.findViewById(R.id.iteminfo_selllistings)).setText(String.format(getResources().getString(R.string.sell_listings_placeholder), model.sell_order_count));
-                ((TextView)root.findViewById(R.id.iteminfo_buyorders)).setText(String.format(getResources().getString(R.string.buy_orders_placeholder), model.buy_order_count));
+                ((TextView)root.findViewById(R.id.iteminfo_selllistings))
+                        .setText(String.format(getResources().getString(R.string.sell_listings_placeholder), model.sell_order_count));
+                ((TextView)root.findViewById(R.id.iteminfo_buyorders))
+                        .setText(String.format(getResources().getString(R.string.buy_orders_placeholder), model.buy_order_count));
             });
 
             addOrdersToTable(activity, root.findViewById(R.id.iteminfo_selltablelayout), model.sell_order_table);
@@ -281,7 +287,8 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
         textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         textView.setTextColor(resources.getColor(R.color.textColor, theme));
-        textView.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 0.5f));
+        textView.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
+                TableRow.LayoutParams.WRAP_CONTENT, 0.5f));
         textView.setPadding(5, 5, 5, 5);
         return textView;
     }

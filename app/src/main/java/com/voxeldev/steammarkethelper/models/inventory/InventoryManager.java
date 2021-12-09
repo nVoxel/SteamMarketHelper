@@ -25,7 +25,8 @@ public class InventoryManager extends RequestManager {
     public InventoryModel getInventoryModel(int gameId){
         try{
             Request request = buildRequest(String.format(Locale.getDefault(),
-                    "https://steamcommunity.com/inventory/%s/%d/2?l=english&count=5000&norender=1", getSteamId(), gameId),
+                    "https://steamcommunity.com/inventory/%s/%d/2?l=english&count=5000&norender=1",
+                    getSteamId(), gameId),
                     getAuthModel().loadCookie());
 
             Response response = getClient().newCall(request).execute();
