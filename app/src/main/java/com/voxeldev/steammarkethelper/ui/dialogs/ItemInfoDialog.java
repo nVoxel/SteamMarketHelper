@@ -91,25 +91,25 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
 
         MaterialButton workshopButton = root.findViewById(R.id.iteminfo_workshopbutton);
 
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             String modelSerialized = savedInstanceState.getString("commodity");
             iconUrl = savedInstanceState.getString("iconUrl");
             name = savedInstanceState.getString("name");
             workshopLink = savedInstanceState.getString("workshopLink");
 
-            if (!modelSerialized.contentEquals("null") && !iconUrl.contentEquals("null") && !name.contentEquals("null")){
+            if (!modelSerialized.contentEquals("null") && !iconUrl.contentEquals("null") && !name.contentEquals("null")) {
                 model = new Gson().fromJson(modelSerialized, MarketItemCommodityModel.class);
                 Glide.with(requireContext())
                         .load(iconUrl)
                         .into((ImageView)root.findViewById(R.id.iteminfo_imageview));
                 ((TextView)root.findViewById(R.id.iteminfo_itemtitle)).setText(name);
-                if (workshopLink != null){ setWorkshopButtonLink(workshopButton); }
+                if (workshopLink != null) { setWorkshopButtonLink(workshopButton); }
                 setCommodity(root);
                 return root;
             }
         }
 
-        switch (args.getInt("type", 0)){
+        switch (args.getInt("type", 0)) {
             case 0:
                 InventoryItemModel inventoryItem = new Gson().fromJson(
                         getArguments().getString("item"),
@@ -152,14 +152,14 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
         return root;
     }
 
-    private void getPriceChart(LineChart priceChart){
+    private void getPriceChart(LineChart priceChart) {
         new Thread(() -> {
             try {
                 MarketManager marketManager = new MarketManager(requireContext(),
                         ((MarketActivity)requireActivity()).gameId);
             MarketItemPriceHistory priceHistory = marketManager.loadItemPriceHistory(name);
 
-            if (priceHistory == null || priceHistory.prices == null || priceHistory.prices.size() < 1){
+            if (priceHistory == null || priceHistory.prices == null || priceHistory.prices.size() < 1) {
                 priceChart.setData(new LineData(new LineDataSet(new ArrayList<>(), "Prices")));
                 priceChart.invalidate();
                 return;
@@ -193,7 +193,7 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
         }).start();
     }
 
-    private void getCommodity(View root){
+    private void getCommodity(View root) {
         new Thread(() -> {
             MarketManager marketManager = new MarketManager(requireContext(),
                     ((MarketActivity)requireActivity()).gameId);
@@ -202,11 +202,11 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
         }).start();
     }
 
-    private void checkWorkshopButton(List<ActionModel> actions, MaterialButton workshopButton){
-        if (actions == null || actions.size() < 1){ return; }
+    private void checkWorkshopButton(List<ActionModel> actions, MaterialButton workshopButton) {
+        if (actions == null || actions.size() < 1) { return; }
 
-        for (ActionModel model : actions){
-            if (model.link != null){
+        for (ActionModel model : actions) {
+            if (model.link != null) {
                 setWorkshopButtonLink(workshopButton);
                 workshopLink = model.link;
                 break;
@@ -214,21 +214,21 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
         }
     }
 
-    private void setWorkshopButtonLink(MaterialButton button){
+    private void setWorkshopButtonLink(MaterialButton button) {
         button.setVisibility(View.VISIBLE);
         button.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(workshopLink));
             try{
                 startActivity(intent);
             }
-            catch (Exception e){
+            catch (Exception e) {
                 Log.e(MainActivity.LOG_TAG, "Failed to open workshop link: " + e.getMessage());
             }
         });
     }
 
-    private void setCommodity(View root){
-        if (model == null){
+    private void setCommodity(View root) {
+        if (model == null) {
             try{
                 requireActivity().runOnUiThread(() -> {
                     ((ConstraintLayout)root.findViewById(R.id.iteminfo_main)).setLayoutTransition(null);
@@ -236,7 +236,7 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
                     root.findViewById(R.id.iteminfo_error).setVisibility(View.VISIBLE);
                 });
             }
-            catch (Exception ignored){}
+            catch (Exception ignored) {}
             return;
         }
 
@@ -261,14 +261,14 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
         catch (Exception e) { Log.e(MainActivity.LOG_TAG, e.toString()); }
     }
 
-    private void addOrdersToTable(Activity activity, TableLayout tableLayout, List<MarketOrderModel> orders){
-        if (orders == null || orders.size() < 1){ return; }
+    private void addOrdersToTable(Activity activity, TableLayout tableLayout, List<MarketOrderModel> orders) {
+        if (orders == null || orders.size() < 1) { return; }
 
         Context context = requireContext();
         Resources resources = getResources();
         Resources.Theme theme = context.getTheme();
         boolean color = true;
-        for (MarketOrderModel marketOrderModel : orders){
+        for (MarketOrderModel marketOrderModel : orders) {
             TableRow tableRow = new TableRow(context);
             if (color) {tableRow.setBackgroundColor(resources.getColor(R.color.TableRowAltColor, theme));}
             color = !color;
@@ -277,11 +277,11 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
             try{
                 activity.runOnUiThread(() -> tableLayout.addView(tableRow));
             }
-            catch (Exception ignored){}
+            catch (Exception ignored) {}
         }
     }
 
-    private TextView getTextView(Context context, Resources resources, Resources.Theme theme, String text){
+    private TextView getTextView(Context context, Resources resources, Resources.Theme theme, String text) {
         TextView textView = new TextView(context);
         textView.setText(text);
         textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -299,7 +299,7 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
         outState.putString("commodity", new Gson().toJson(model));
         outState.putString("iconUrl", iconUrl);
         outState.putString("name", name);
-        if (workshopLink == null){return;}
+        if (workshopLink == null) {return;}
         outState.putString("workshopLink", workshopLink);
     }
 }

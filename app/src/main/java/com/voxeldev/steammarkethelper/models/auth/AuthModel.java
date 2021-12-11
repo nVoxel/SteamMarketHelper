@@ -16,12 +16,12 @@ public class AuthModel {
     private CacheModel cacheModel;
     public static final String necessaryMarketCookie = "webTradeEligibility=%7B%22allowed%22%3A1%2C%22allowed_at_time%22%3A0%2C%22steamguard_required_days%22%3A15%2C%22new_device_cooldown_days%22%3A7%2C%22time_checked%22%3A1620583359%7D;";
 
-    public AuthModel(Context context){
+    public AuthModel(Context context) {
         client = new OkHttpClient();
         cacheModel = new CacheModel(context);
     }
 
-    public boolean checkAuth(String cookie){ // Returns false if auth is success!
+    public boolean checkAuth(String cookie) { // Returns false if auth is success!
         String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36";
         Request request = new Request.Builder()
                 .url("https://steamcommunity.com/")
@@ -34,7 +34,7 @@ public class AuthModel {
 
             return response.body().string().contains("https://steamcommunity.com/login/home");
         }
-        catch (Exception e){ Log.e(MainActivity.LOG_TAG, e.toString()); }
+        catch (Exception e) { Log.e(MainActivity.LOG_TAG, e.toString()); }
 
         return true;
     }

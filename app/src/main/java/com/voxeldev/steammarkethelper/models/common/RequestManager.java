@@ -9,12 +9,12 @@ public class RequestManager {
     private final OkHttpClient client;
     private final AuthModel authModel;
 
-    public RequestManager(AuthModel authModel){
+    public RequestManager(AuthModel authModel) {
         client = new OkHttpClient();
         this.authModel = authModel;
     }
 
-    public OkHttpClient getClient(){ return client; }
+    public OkHttpClient getClient() { return client; }
     public AuthModel getAuthModel() { return authModel; }
 
     public Request buildRequest(String url, String cookie) {

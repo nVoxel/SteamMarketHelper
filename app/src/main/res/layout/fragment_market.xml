@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/market_main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent" >
     <com.voxeldev.customswiperefresh.CustomSwipeRefresh
         android:id="@+id/market_swiperefresh"
         android:layout_width="match_parent"

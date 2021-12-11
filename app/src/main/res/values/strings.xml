@@ -6,6 +6,7 @@
     <string name="go_up">Go up</string>
     <string name="market_count">%1$d pcs.</string>
     <string name="search">Search</string>
+    <string name="search_completed">Search completed</string>
     <string name="workshop_button_text">View Workshop item</string>
     <string name="sell_listings">Sell listings</string>
     <string name="sell_listings_placeholder">Sell listings: %1$s</string>

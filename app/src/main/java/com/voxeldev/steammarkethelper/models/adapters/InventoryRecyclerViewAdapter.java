@@ -42,7 +42,7 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
 
     public InventoryRecyclerViewAdapter(Context context, Activity activity,
                                         RecyclerView recyclerView, FragmentManager fragmentManager,
-                                        InventoryModel model){
+                                        InventoryModel model) {
         this.context = context;
         this.activity = activity;
         this.recyclerView = recyclerView;
@@ -80,19 +80,19 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
         view.setOnClickListener(clickView -> {
             int position = recyclerView.getChildLayoutPosition(clickView);
 
-            if (fragmentManager.getFragments().size() < 1){
+            if (fragmentManager.getFragments().size() < 1) {
                 try {
                     InventoryItemModel inventoryItem = model.descriptions.stream()
                             .filter(i -> i.classid.contentEquals(model.assets.get(position).classid))
                             .findFirst().orElse(null);
-                    if (inventoryItem == null){
+                    if (inventoryItem == null) {
                         Log.e(MainActivity.LOG_TAG, "Cant display info dialog, item not found");
                         return;
                     }
                     ItemInfoDialog itemInfoDialog = ItemInfoDialog.newInventoryInstance(inventoryItem);
                     itemInfoDialog.showNow(fragmentManager, "inventoryItemInfoDialog");
                 }
-                catch (Exception e){ Log.e(MainActivity.LOG_TAG, e.toString()); }
+                catch (Exception e) { Log.e(MainActivity.LOG_TAG, e.toString()); }
             }
         });
         return new ViewHolder(view);
@@ -106,7 +106,7 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
                 .filter(i -> i.classid.contentEquals(inventoryAsset.classid))
                 .findFirst().orElse(null);
 
-        if (inventoryItem == null){
+        if (inventoryItem == null) {
             Log.e(MainActivity.LOG_TAG, "Cant find item to display in models");
             return;
         }
@@ -141,9 +141,9 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
                 });
 
         ((ViewHolder) holder).getTradeBanChip().setVisibility(View.GONE); //TODO: hack!
-        if (inventoryItem.owner_descriptions != null && inventoryItem.owner_descriptions.size() > 0){
-            for (InventoryOwnerDescription description : inventoryItem.owner_descriptions){
-                if (description.value == null || !description.value.contains("date")){continue;}
+        if (inventoryItem.owner_descriptions != null && inventoryItem.owner_descriptions.size() > 0) {
+            for (InventoryOwnerDescription description : inventoryItem.owner_descriptions) {
+                if (description.value == null || !description.value.contains("date")) {continue;}
 
                 try {
                     String chipText = getTimeDifference(
@@ -158,7 +158,7 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
                         ((ViewHolder) holder).getTradeBanChip().setVisibility(View.VISIBLE);
                     });
                 }
-                catch (Exception ignored){}
+                catch (Exception ignored) {}
 
                 return;
             }
@@ -173,7 +173,7 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
     public String getTimeDifference(String date) {
         try{
             long difference = Math.abs(System.currentTimeMillis()/1000 - Long.parseLong(date));
-            if (difference > 86400){
+            if (difference > 86400) {
                 return String.format(context.getResources().getString(R.string.tradeban_days),
                         TimeUnit.DAYS.convert(difference, TimeUnit.SECONDS));
             }
@@ -182,22 +182,22 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
                         TimeUnit.HOURS.convert(difference, TimeUnit.SECONDS));
             }
         }
-        catch (Exception e){
+        catch (Exception e) {
             Log.e(MainActivity.LOG_TAG, e.toString());
         }
         return "?";
     }
 
-    public int getItemAmount(InventoryItemModel item){
+    public int getItemAmount(InventoryItemModel item) {
         int amount = 0;
         try{
-            for (InventoryAssetModel asset : model.assets){
-                if (asset.classid.contentEquals(item.classid)){
+            for (InventoryAssetModel asset : model.assets) {
+                if (asset.classid.contentEquals(item.classid)) {
                     amount += Integer.parseInt(asset.amount);
                 }
             }
         }
-        catch (Exception e){ Log.e(MainActivity.LOG_TAG, e.toString()); }
+        catch (Exception e) { Log.e(MainActivity.LOG_TAG, e.toString()); }
         return amount;
     }
 }

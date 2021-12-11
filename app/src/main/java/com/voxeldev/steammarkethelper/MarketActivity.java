@@ -47,7 +47,7 @@ public class MarketActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
 
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null){
+        if (actionBar != null) {
             actionBar.setTitle(gameName);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -65,10 +65,10 @@ public class MarketActivity extends AppCompatActivity {
                     .getParcelable("marketRecyclerSavedState");
             loadedSellListings = gson.fromJson(
                     savedInstanceState.getString("sellListingsSerialized"),
-                    new TypeToken<List<ListingModel>>(){}.getType());
+                    new TypeToken<List<ListingModel>>() {}.getType());
             loadedBuyOrders = gson.fromJson(
                     savedInstanceState.getString("buyOrdersSerialized"),
-                    new TypeToken<List<ListingModel>>(){}.getType());
+                    new TypeToken<List<ListingModel>>() {}.getType());
             sellRecyclerViewSavedState = savedInstanceState
                     .getParcelable("sellRecyclerSavedState");
             buyRecyclerViewSavedState = savedInstanceState
@@ -78,7 +78,7 @@ public class MarketActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             finish();
             overridePendingTransition(R.anim.left_in, R.anim.right_out);
         }

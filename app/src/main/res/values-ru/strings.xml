@@ -6,6 +6,7 @@
     <string name="go_up">Наверх</string>
     <string name="market_count">%1$d шт.</string>
     <string name="search">Поиск</string>
+    <string name="search_completed">Поиск завершен</string>
     <string name="workshop_button_text">Открыть в мастерской</string>
     <string name="sell_listings">Лоты на продажу</string>
     <string name="sell_listings_placeholder">Лоты на продажу: %1$s</string>

@@ -18,7 +18,7 @@ public class ChartMarkerView extends MarkerView {
     private final TextView priceTextView;
     private final TextView amountTextView;
 
-    public ChartMarkerView(Context context, int resource, MarketItemPriceHistory priceHistory, LineChart chart){
+    public ChartMarkerView(Context context, int resource, MarketItemPriceHistory priceHistory, LineChart chart) {
         super(context, resource);
 
         setChartView(chart);
@@ -34,8 +34,8 @@ public class ChartMarkerView extends MarkerView {
     public void refreshContent(Entry e, Highlight highlight) {
         datetimeTextView.setText(priceHistory.prices.get((int)e.getX()).get(0));
         String price = priceHistory.prices.get((int)e.getX()).get(1);
-        if (!priceHistory.price_prefix.isEmpty()){ price = String.format("%s %s", priceHistory.price_prefix, price); }
-        if (!priceHistory.price_suffix.isEmpty()){ price = String.format("%s %s", price, priceHistory.price_suffix); }
+        if (!priceHistory.price_prefix.isEmpty()) { price = String.format("%s %s", priceHistory.price_prefix, price); }
+        if (!priceHistory.price_suffix.isEmpty()) { price = String.format("%s %s", price, priceHistory.price_suffix); }
         priceTextView.setText(price);
         amountTextView.setText(priceHistory.prices.get((int)e.getX()).get(2));
 

@@ -15,7 +15,7 @@ public class NameIdPair {
     @ColumnInfo(name = "name_id")
     public String nameId;
 
-    public NameIdPair(String itemName, String nameId){
+    public NameIdPair(String itemName, String nameId) {
         this.itemName = itemName;
         this.nameId = nameId;
     }

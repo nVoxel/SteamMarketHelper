@@ -58,8 +58,8 @@ public class MarketFragment extends Fragment {
             @Override
             public void onScrolled(@NonNull @NotNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (!recyclerView.canScrollVertically(1)){
-                    if (loadedMarket.start >= loadedMarket.total_count){
+                if (!recyclerView.canScrollVertically(1)) {
+                    if (loadedMarket.start >= loadedMarket.total_count) {
                         Snackbar.make(root.findViewById(R.id.market_main),
                                 "Search completed", Snackbar.LENGTH_LONG).show();
                         return;
@@ -74,7 +74,7 @@ public class MarketFragment extends Fragment {
             }
         });
 
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             loadedMarket = new Gson().fromJson(
                     savedInstanceState.getString("marketSerialized"), MarketModel.class);
             replaceAdapter();
@@ -82,7 +82,7 @@ public class MarketFragment extends Fragment {
         }
 
         MarketActivity marketActivity = (MarketActivity) requireActivity();
-        if (marketActivity.loadedMarket != null && marketActivity.marketRecyclerViewSavedState != null){
+        if (marketActivity.loadedMarket != null && marketActivity.marketRecyclerViewSavedState != null) {
             loadedMarket = marketActivity.loadedMarket;
             replaceAdapter();
             marketRecyclerView.getLayoutManager()
@@ -94,7 +94,7 @@ public class MarketFragment extends Fragment {
         return root;
     }
 
-    private void loadMarketToRecyclerView(){
+    private void loadMarketToRecyclerView() {
         if (marketLoading) { return; }
         marketLoading = true;
 
@@ -108,7 +108,7 @@ public class MarketFragment extends Fragment {
                     (loadedMarket == null || loadedMarket.query == null) ? "" : loadedMarket.query);
             if (model == null || model.results == null || model.results.size() == 0) { return; }
 
-            if (loadedMarket == null){
+            if (loadedMarket == null) {
                 loadedMarket = model;
             }
             else{
@@ -123,13 +123,13 @@ public class MarketFragment extends Fragment {
                     customSwipeRefresh.setRefreshing(false, CustomSwipeRefreshDirection.TOP);
                 });
             }
-            catch (Exception ignored){}
+            catch (Exception ignored) {}
 
             marketLoading = false;
         }).start();
     }
 
-    private void replaceAdapter(){
+    private void replaceAdapter() {
         Parcelable state = marketRecyclerView.getLayoutManager().onSaveInstanceState();
         MarketRecyclerViewAdapter adapter = new MarketRecyclerViewAdapter(requireContext(),
                 loadedMarket, marketRecyclerView, getChildFragmentManager());
@@ -137,7 +137,7 @@ public class MarketFragment extends Fragment {
         marketRecyclerView.getLayoutManager().onRestoreInstanceState(state);
     }
 
-    private void updateMarketQuery(String query){
+    private void updateMarketQuery(String query) {
         if (loadedMarket == null) {
             return;
         }
@@ -171,7 +171,7 @@ public class MarketFragment extends Fragment {
             return false;
         });
 
-        if (loadedMarket != null && loadedMarket.query != null){
+        if (loadedMarket != null && loadedMarket.query != null) {
             searchView.setQuery(loadedMarket.query, false);
             searchView.setIconified(false);
         }

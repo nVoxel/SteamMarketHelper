@@ -21,16 +21,16 @@ public class AuthActivity extends AppCompatActivity {
 
         WebView authWebView = findViewById(R.id.auth_webview);
         authWebView.getSettings().setJavaScriptEnabled(true);
-        authWebView.setWebViewClient(new WebViewClient(){
+        authWebView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
                 if (!(url.contains("https://steamcommunity.com/id/") ||
-                        url.contains("https://steamcommunity.com/profiles/"))){ return; }
+                        url.contains("https://steamcommunity.com/profiles/"))) { return; }
 
                 AuthModel authModel = new AuthModel(getApplicationContext());
                 String cookie = CookieManager.getInstance().getCookie(url);
 
-                if (cookie == null || cookie.equals("")){ return; }
+                if (cookie == null || cookie.equals("")) { return; }
 
                 new Thread(() -> {
                     if (authModel.checkAuth(cookie)) {
@@ -43,7 +43,7 @@ public class AuthActivity extends AppCompatActivity {
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         finish();
                     }
-                    catch (Exception e){ authWebView.reload(); }
+                    catch (Exception e) { authWebView.reload(); }
                 }).start();
             }
         });
