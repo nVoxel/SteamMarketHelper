@@ -75,7 +75,7 @@ public class ListingsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         view.setOnClickListener(clickView -> {
             if (fragmentManager.getFragments().size() < 1){
                 try {
-                    ItemInfoDialog itemInfoDialog = ItemInfoDialog.newListingsInstance(
+                    ItemInfoDialog itemInfoDialog = ItemInfoDialog.getInstance(
                             listings.get(recyclerView.getChildLayoutPosition(clickView)));
                     itemInfoDialog.showNow(fragmentManager, "listingsItemInfoDialog");
                 }

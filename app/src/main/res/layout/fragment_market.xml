@@ -9,6 +9,7 @@
         android:id="@+id/market_swiperefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_margin="5dp"
         app:srl_direction="both">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/market_recyclerview"

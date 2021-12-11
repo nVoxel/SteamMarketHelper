@@ -37,4 +37,15 @@
     <string name="my_buy_orders_placeholder">Мои запросы на покупку (%1$d)</string>
     <string name="listed_on">Выставлено: %1$s</string>
     <string name="quantity">Количество: %1$s</string>
+    <string name="you_receive">Вы получите</string>
+    <string name="buyer_pays">Покупатель платит</string>
+    <string name="sell">Выставить на продажу</string>
+    <string name="not_available">Н/Д</string>
+    <string name="incorrect_price">Некорректная цена</string>
+    <string name="not_marketable">Выбранный предмет нельзя продать</string>
+    <string name="failed_sell">Не удалось отправить запрос на продажу</string>
+    <string name="sell_success">Ваш предмет успешно выставлен на продажу</string>
+    <string name="sell_mobile_confirmation">Подтверждение отправлено на телефон</string>
+    <string name="sell_email_confirmation">Подтверждение отправлено на e-mail</string>
+    <string name="inventory_hint">Нажмите на предмет, чтобы посмотреть информацию. Удерживайте, чтобы продать его.</string>
 </resources>

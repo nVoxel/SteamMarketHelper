@@ -73,17 +73,19 @@ public class MarketRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_marketrecyclerview, parent, false);
+
         view.setOnClickListener(clickView -> {
             if (fragmentManager.getFragments().size() < 1){
                 try {
                     ItemInfoDialog itemInfoDialog = ItemInfoDialog
-                            .newMarketInstance(model.results.get(
+                            .getInstance(model.results.get(
                                     recyclerView.getChildLayoutPosition(clickView)));
                     itemInfoDialog.showNow(fragmentManager, "marketItemInfoDialog");
                 }
                 catch (Exception e){ Log.e(MainActivity.LOG_TAG, e.toString()); }
             }
         });
+
         return new ViewHolder(view);
     }
 

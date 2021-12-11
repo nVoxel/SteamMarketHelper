@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,12 +22,15 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.chip.Chip;
 import com.voxeldev.steammarkethelper.MainActivity;
+import com.voxeldev.steammarkethelper.MarketActivity;
 import com.voxeldev.steammarkethelper.R;
 import com.voxeldev.steammarkethelper.models.inventory.InventoryAssetModel;
 import com.voxeldev.steammarkethelper.models.inventory.InventoryItemModel;
 import com.voxeldev.steammarkethelper.models.inventory.InventoryModel;
 import com.voxeldev.steammarkethelper.models.inventory.InventoryOwnerDescription;
 import com.voxeldev.steammarkethelper.ui.dialogs.ItemInfoDialog;
+import com.voxeldev.steammarkethelper.ui.dialogs.ItemSellDialog;
+import com.voxeldev.steammarkethelper.ui.inventory.InventoryFragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -37,17 +41,21 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
     private final Context context;
     private final Activity activity;
     private final RecyclerView recyclerView;
+    private final InventoryFragment fragment;
     private final FragmentManager fragmentManager;
     private final InventoryModel model;
+    private final int gameId;
 
     public InventoryRecyclerViewAdapter(Context context, Activity activity,
-                                        RecyclerView recyclerView, FragmentManager fragmentManager,
+                                        InventoryFragment fragment, RecyclerView recyclerView,
                                         InventoryModel model){
         this.context = context;
         this.activity = activity;
+        this.fragment = fragment;
         this.recyclerView = recyclerView;
-        this.fragmentManager = fragmentManager;
+        this.fragmentManager = fragment.getChildFragmentManager();
         this.model = model;
+        gameId = ((MarketActivity)activity).gameId;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -77,24 +85,63 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
                                                       int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_inventoryrecyclerview, parent, false);
-        view.setOnClickListener(clickView -> {
-            int position = recyclerView.getChildLayoutPosition(clickView);
 
-            if (fragmentManager.getFragments().size() < 1){
-                try {
-                    InventoryItemModel inventoryItem = model.descriptions.stream()
-                            .filter(i -> i.classid.contentEquals(model.assets.get(position).classid))
-                            .findFirst().orElse(null);
-                    if (inventoryItem == null){
-                        Log.e(MainActivity.LOG_TAG, "Cant display info dialog, item not found");
-                        return;
-                    }
-                    ItemInfoDialog itemInfoDialog = ItemInfoDialog.newInventoryInstance(inventoryItem);
-                    itemInfoDialog.showNow(fragmentManager, "inventoryItemInfoDialog");
+        view.setOnClickListener(clickView -> {
+            if (fragmentManager.getFragments().size() > 0){
+                return;
+            }
+
+            try {
+                InventoryItemModel inventoryItem =
+                        getInventoryItemByPosition(recyclerView.getChildLayoutPosition(view));
+
+                if (inventoryItem == null){
+                    Log.e(MainActivity.LOG_TAG, "Cant display info dialog, item not found");
+                    return;
                 }
-                catch (Exception e){ Log.e(MainActivity.LOG_TAG, e.toString()); }
+
+                ItemInfoDialog itemInfoDialog = ItemInfoDialog.getInstance(inventoryItem);
+                itemInfoDialog.showNow(fragmentManager, "inventoryItemInfoDialog");
+            }
+            catch (Exception e) {
+                Log.e(MainActivity.LOG_TAG, "Failed to show ItemInfoDialog: " + e.getMessage());
             }
         });
+
+        view.setOnLongClickListener(clickView -> {
+            if (fragmentManager.getFragments().size() > 0){
+                return true;
+            }
+
+            try {
+                int position = recyclerView.getChildLayoutPosition(view);
+                InventoryItemModel inventoryItem = getInventoryItemByPosition(position);
+
+                if (inventoryItem == null) {
+                    Log.e(MainActivity.LOG_TAG, "Cant display sell dialog, item not found");
+                    return true;
+                }
+
+                if (inventoryItem.marketable == 0) {
+                    Toast.makeText(context, R.string.not_marketable, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+
+                ItemSellDialog itemSellDialog = ItemSellDialog.getInstance(gameId,
+                        model.assets.get(position).assetid, inventoryItem.name, inventoryItem.icon_url);
+                itemSellDialog.showNow(fragmentManager, "inventoryItemInfoDialog");
+                itemSellDialog.getDialog().setOnDismissListener(dialog -> {
+                    fragmentManager.beginTransaction().remove(itemSellDialog).commit();
+                    fragment.reloadInventory();
+                });
+            }
+            catch (Exception e) {
+                Log.e(MainActivity.LOG_TAG, "Failed to show ItemSellDialog: " + e.getMessage());
+            }
+
+            return true;
+        });
+
         return new ViewHolder(view);
     }
 
@@ -140,7 +187,7 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
                     }
                 });
 
-        ((ViewHolder) holder).getTradeBanChip().setVisibility(View.GONE); //TODO: hack!
+        ((ViewHolder) holder).getTradeBanChip().setVisibility(View.GONE);
         if (inventoryItem.owner_descriptions != null && inventoryItem.owner_descriptions.size() > 0){
             for (InventoryOwnerDescription description : inventoryItem.owner_descriptions){
                 if (description.value == null || !description.value.contains("date")){continue;}
@@ -170,7 +217,7 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
         return ((model != null && model.assets != null) ? model.assets.size() : 0);
     }
 
-    public String getTimeDifference(String date) {
+    private String getTimeDifference(String date) {
         try{
             long difference = Math.abs(System.currentTimeMillis()/1000 - Long.parseLong(date));
             if (difference > 86400){
@@ -188,8 +235,9 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
         return "?";
     }
 
-    public int getItemAmount(InventoryItemModel item){
+    private int getItemAmount(InventoryItemModel item) {
         int amount = 0;
+
         try{
             for (InventoryAssetModel asset : model.assets){
                 if (asset.classid.contentEquals(item.classid)){
@@ -197,7 +245,16 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
                 }
             }
         }
-        catch (Exception e){ Log.e(MainActivity.LOG_TAG, e.toString()); }
+        catch (Exception e){
+            Log.e(MainActivity.LOG_TAG, e.getMessage());
+        }
+
         return amount;
+    }
+
+    private InventoryItemModel getInventoryItemByPosition(int position) {
+        return model.descriptions.stream()
+                .filter(i -> i.classid.contentEquals(model.assets.get(position).classid))
+                .findFirst().orElse(null);
     }
 }

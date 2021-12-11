@@ -37,4 +37,15 @@
     <string name="my_buy_orders_placeholder">My buy orders (%1$d)</string>
     <string name="listed_on">Listed on: %1$s</string>
     <string name="quantity">Quantity: %1$s</string>
+    <string name="you_receive">You receive</string>
+    <string name="buyer_pays">Buyer pays</string>
+    <string name="sell">Put for sale</string>
+    <string name="not_available">N/A</string>
+    <string name="incorrect_price">Price is incorrect</string>
+    <string name="not_marketable">Selected item is not marketable</string>
+    <string name="failed_sell">Failed to make sell request</string>
+    <string name="sell_success">Your item was listed for sale</string>
+    <string name="sell_mobile_confirmation">Confirmation was sent on your phone</string>
+    <string name="sell_email_confirmation">Confirmation was sent on your e-mail</string>
+    <string name="inventory_hint">Click on item to view its details. Long click to sell it.</string>
 </resources>

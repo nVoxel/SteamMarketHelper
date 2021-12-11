@@ -53,9 +53,9 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
     private List<ActionModel> actions;
     private String workshopLink;
     private String name;
-    private static final String iconUrlPrefix = "https://community.akamai.steamstatic.com/economy/image/";
+    public static final String iconUrlPrefix = "https://community.akamai.steamstatic.com/economy/image/";
 
-    public static ItemInfoDialog newInventoryInstance(InventoryItemModel inventoryItem) {
+    public static ItemInfoDialog getInstance(InventoryItemModel inventoryItem) {
         Bundle args = new Bundle();
         args.putInt("type", 0);
         args.putString("item", new Gson().toJson(inventoryItem));
@@ -64,7 +64,7 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
         return itemInfoDialog;
     }
 
-    public static ItemInfoDialog newMarketInstance(MarketItemModel marketItem) {
+    public static ItemInfoDialog getInstance(MarketItemModel marketItem) {
         Bundle args = new Bundle();
         args.putInt("type", 1);
         args.putString("item", new Gson().toJson(marketItem));
@@ -73,7 +73,7 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
         return itemInfoDialog;
     }
 
-    public static ItemInfoDialog newListingsInstance(ListingModel listingModel) {
+    public static ItemInfoDialog getInstance(ListingModel listingModel) {
         Bundle args = new Bundle();
         args.putInt("type", 2);
         args.putString("item", new Gson().toJson(listingModel));

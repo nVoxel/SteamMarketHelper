@@ -32,6 +32,8 @@ public class InventoryFragment extends Fragment {
 
     private InventoryModel loadedInventory;
     private RecyclerView inventoryRecyclerView;
+    private CircularProgressIndicator inventoryLoader;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_inventory, container, false);
@@ -39,17 +41,10 @@ public class InventoryFragment extends Fragment {
         inventoryRecyclerView = root.findViewById(R.id.inventory_recyclerview);
         inventoryRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
-        CircularProgressIndicator inventoryLoader = root.findViewById(R.id.inventory_loader);
+        inventoryLoader = root.findViewById(R.id.inventory_loader);
 
-        SwipeRefreshLayout swipeRefreshLayout = root.findViewById(R.id.inventory_swiperefresh);
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            inventoryRecyclerView.setVisibility(View.GONE);
-            inventoryLoader.setVisibility(View.VISIBLE);
-            Parcelable state = inventoryRecyclerView.getLayoutManager().onSaveInstanceState();
-            loadInventory(inventoryLoader);
-            inventoryRecyclerView.getLayoutManager().onRestoreInstanceState(state);
-            swipeRefreshLayout.setRefreshing(false);
-        });
+        swipeRefreshLayout = root.findViewById(R.id.inventory_swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(this::reloadInventory);
 
         CircularProgressIndicator inventoryBalanceLoader = root.findViewById(R.id.inventory_balance_loader);
         TextView inventoryBalanceTextView = root.findViewById(R.id.inventory_balance_textview);
@@ -83,7 +78,7 @@ public class InventoryFragment extends Fragment {
             return root;
         }
 
-        loadInventory(inventoryLoader);
+        loadInventory();
 
         return root;
     }
@@ -93,14 +88,14 @@ public class InventoryFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    private void loadInventory(CircularProgressIndicator loader){
+    private void loadInventory(){
         new Thread(() -> {
             try{
                 InventoryManager inventoryManager = new InventoryManager(new AuthModel(requireContext()));
                 loadedInventory = inventoryManager.getInventoryModel(((MarketActivity)requireActivity()).gameId);
 
                 requireActivity().runOnUiThread(() -> {
-                    loader.setVisibility(View.GONE);
+                    inventoryLoader.setVisibility(View.GONE);
                     inventoryRecyclerView.setVisibility(View.VISIBLE);
                     setAdapter(inventoryRecyclerView);
                 });
@@ -109,9 +104,18 @@ public class InventoryFragment extends Fragment {
         }).start();
     }
 
+    public void reloadInventory() {
+        inventoryRecyclerView.setVisibility(View.GONE);
+        inventoryLoader.setVisibility(View.VISIBLE);
+        Parcelable state = inventoryRecyclerView.getLayoutManager().onSaveInstanceState();
+        loadInventory();
+        inventoryRecyclerView.getLayoutManager().onRestoreInstanceState(state);
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
     private void setAdapter(RecyclerView inventoryRecyclerView){
         inventoryRecyclerView.setAdapter(new InventoryRecyclerViewAdapter(
-                requireContext(), requireActivity(), inventoryRecyclerView, getChildFragmentManager(), loadedInventory));
+                requireContext(), requireActivity(), this, inventoryRecyclerView, loadedInventory));
     }
 
     private void loadWalletBalance(CircularProgressIndicator balanceLoader, TextView inventoryBalanceTextView) {
