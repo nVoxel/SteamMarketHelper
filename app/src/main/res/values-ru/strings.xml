@@ -48,4 +48,13 @@
     <string name="sell_mobile_confirmation">Подтверждение отправлено на телефон</string>
     <string name="sell_email_confirmation">Подтверждение отправлено на e-mail</string>
     <string name="inventory_hint">Нажмите на предмет, чтобы посмотреть информацию. Удерживайте, чтобы продать его.</string>
+    <string name="you_pay">Вы заплатите</string>
+    <string name="buy">Создать запрос на покупку</string>
+    <string name="amount">Количество</string>
+    <string name="max_price">Максимальная стоимость: %1$s %2$.2f</string>
+    <string name="incorrect_amount">Некорректное количество</string>
+    <string name="amount_zero">Количество должно быть больше 0</string>
+    <string name="failed_buy">Не удалось отправить запрос на покупку</string>
+    <string name="buy_success">Запрос на покупку создан успешно</string>
+    <string name="market_hint">Нажмите на предмет, чтобы посмотреть информацию. Удерживайте, чтобы создать запрос на покупку.</string>
 </resources>

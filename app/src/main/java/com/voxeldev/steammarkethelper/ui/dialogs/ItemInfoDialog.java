@@ -59,8 +59,10 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
         Bundle args = new Bundle();
         args.putInt("type", 0);
         args.putString("item", new Gson().toJson(inventoryItem));
+
         ItemInfoDialog itemInfoDialog = new ItemInfoDialog();
         itemInfoDialog.setArguments(args);
+
         return itemInfoDialog;
     }
 
@@ -68,8 +70,10 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
         Bundle args = new Bundle();
         args.putInt("type", 1);
         args.putString("item", new Gson().toJson(marketItem));
+
         ItemInfoDialog itemInfoDialog = new ItemInfoDialog();
         itemInfoDialog.setArguments(args);
+
         return itemInfoDialog;
     }
 
@@ -77,8 +81,10 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
         Bundle args = new Bundle();
         args.putInt("type", 2);
         args.putString("item", new Gson().toJson(listingModel));
+
         ItemInfoDialog itemInfoDialog = new ItemInfoDialog();
         itemInfoDialog.setArguments(args);
+
         return itemInfoDialog;
     }
 

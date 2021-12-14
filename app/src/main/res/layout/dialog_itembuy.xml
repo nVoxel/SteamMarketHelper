@@ -10,7 +10,7 @@
     android:paddingBottom="10dp">
 
     <ImageView
-        android:id="@+id/itemsell_sheetpin"
+        android:id="@+id/itembuy_sheetpin"
         android:layout_width="38dp"
         android:layout_height="4dp"
         android:layout_gravity="center_horizontal"
@@ -26,14 +26,14 @@
         android:layout_marginTop="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/itemsell_sheetpin" >
+        app:layout_constraintTop_toBottomOf="@id/itembuy_sheetpin" >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:id="@+id/itemsell_loader"
+                android:id="@+id/itembuy_loader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:indeterminate="true"
@@ -43,14 +43,13 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/itemsell_main"
+                android:id="@+id/itembuy_main"
                 android:visibility="invisible"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:animateLayoutChanges="true" >
+                android:layout_height="match_parent" >
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/itemsell_nametextview"
+                    android:id="@+id/itembuy_nametextview"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -62,59 +61,76 @@
                     tools:drawableLeft="@tools:sample/avatars"
                     tools:text="Sticker | Natus Vincere | Katowice 2019" />
 
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/itembuy_maxprice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:textColor="@color/textColor"
+                    android:textSize="18sp"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/itembuy_nametextview"
+                    tools:text="Maximum price: $ 1337.99" />
+
                 <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/itemsell_guideline"
+                    android:id="@+id/itembuy_guideline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     app:layout_constraintGuide_percent="0.5" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/itemsell_receive_inputlayout"
+                    android:id="@+id/itembuy_pay_inputlayout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="5dp"
-                    app:layout_constraintEnd_toStartOf="@+id/itemsell_guideline"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintEnd_toStartOf="@+id/itembuy_guideline"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/itemsell_nametextview">
+                    app:layout_constraintTop_toBottomOf="@+id/itembuy_maxprice">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/itemsell_receive"
+                        android:id="@+id/itembuy_pay"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:hint="@string/you_receive"
+                        android:hint="@string/you_pay"
                         android:inputType="numberDecimal" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/itemsell_guideline"
-                    app:layout_constraintTop_toBottomOf="@id/itemsell_nametextview">
+                    app:layout_constraintStart_toEndOf="@+id/itembuy_guideline"
+                    app:layout_constraintTop_toBottomOf="@+id/itembuy_maxprice">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/itemsell_pays"
+                        android:id="@+id/itembuy_amount"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:hint="@string/buyer_pays"
-                        android:inputType="numberDecimal" />
+                        android:hint="@string/amount"
+                        android:inputType="numberDecimal"
+                        android:text="1"
+                        tools:ignore="HardcodedText" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/itemsell_sellbutton"
+                    android:id="@+id/itembuy_buybutton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/sell"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/buy"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/itemsell_receive_inputlayout" />
+                    app:layout_constraintTop_toBottomOf="@+id/itembuy_pay_inputlayout" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

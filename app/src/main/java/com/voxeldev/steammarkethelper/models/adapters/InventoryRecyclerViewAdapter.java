@@ -129,7 +129,7 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
 
                 ItemSellDialog itemSellDialog = ItemSellDialog.getInstance(gameId,
                         model.assets.get(position).assetid, inventoryItem.name, inventoryItem.icon_url);
-                itemSellDialog.showNow(fragmentManager, "inventoryItemInfoDialog");
+                itemSellDialog.showNow(fragmentManager, "inventoryItemSellDialog");
                 itemSellDialog.getDialog().setOnDismissListener(dialog -> {
                     fragmentManager.beginTransaction().remove(itemSellDialog).commit();
                     fragment.reloadInventory();
@@ -169,7 +169,7 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
 
         //noinspection SuspiciousNameCombination
         Glide.with(context)
-                .load("https://community.akamai.steamstatic.com/economy/image/" + inventoryItem.icon_url)
+                .load(ItemInfoDialog.iconUrlPrefix + inventoryItem.icon_url)
                 .into(new CustomTarget<Drawable>(width, width) {
                     @Override
                     public void onResourceReady(@NonNull @NotNull Drawable resource,

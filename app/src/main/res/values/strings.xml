@@ -48,4 +48,13 @@
     <string name="sell_mobile_confirmation">Confirmation was sent on your phone</string>
     <string name="sell_email_confirmation">Confirmation was sent on your e-mail</string>
     <string name="inventory_hint">Click on item to view its details. Long click to sell it.</string>
+    <string name="you_pay">You pay</string>
+    <string name="buy">Place buy order</string>
+    <string name="amount">Amount</string>
+    <string name="max_price">Maximum price: %1$s %2$.2f</string>
+    <string name="incorrect_amount">Incorrect amount</string>
+    <string name="amount_zero">Amount must be greater than 0</string>
+    <string name="failed_buy">Failed to make buy request</string>
+    <string name="buy_success">Created buy order successfully</string>
+    <string name="market_hint">Click on item to view its details. Long click to create buy order.</string>
 </resources>

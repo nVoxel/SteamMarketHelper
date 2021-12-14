@@ -18,47 +18,33 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.voxeldev.steammarkethelper.MainActivity;
 import com.voxeldev.steammarkethelper.R;
 import com.voxeldev.steammarkethelper.models.auth.AuthModel;
 import com.voxeldev.steammarkethelper.models.common.RequestManager;
-import com.voxeldev.steammarkethelper.models.inventory.InventoryManager;
-import com.voxeldev.steammarkethelper.models.market.MarketCurrencyModel;
 import com.voxeldev.steammarkethelper.models.market.SellResponseModel;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
-import java.util.List;
-import java.util.Objects;
 
 import okhttp3.FormBody;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class ItemSellDialog extends BottomSheetDialogFragment {
+public class ItemSellDialog extends MarketActionDialog {
 
-    private int currencyCode;
-    private double marketFee;
-    private String currencyString;
     private String currentReceiveText;
     private String currentPaysText;
+    private ConstraintLayout mainConstraintLayout;
+    private CircularProgressIndicator loader;
 
     public static ItemSellDialog getInstance(int appId, String assetId,
                                              String itemName, String itemIconUrl) {
@@ -67,8 +53,10 @@ public class ItemSellDialog extends BottomSheetDialogFragment {
         args.putString("assetId", assetId);
         args.putString("itemName", itemName);
         args.putString("itemIconUrl", itemIconUrl);
+
         ItemSellDialog itemSellDialog = new ItemSellDialog();
         itemSellDialog.setArguments(args);
+
         return itemSellDialog;
     }
 
@@ -106,8 +94,8 @@ public class ItemSellDialog extends BottomSheetDialogFragment {
         TextInputEditText receiveEditText = root.findViewById(R.id.itemsell_receive);
         TextInputEditText paysEditText = root.findViewById(R.id.itemsell_pays);
 
-        ConstraintLayout mainConstraintLayout = root.findViewById(R.id.itemsell_main);
-        CircularProgressIndicator loader = root.findViewById(R.id.itemsell_loader);
+        mainConstraintLayout = root.findViewById(R.id.itemsell_main);
+        loader = root.findViewById(R.id.itemsell_loader);
 
         MaterialButton sellButton = root.findViewById(R.id.itemsell_sellbutton);
         sellButton.setOnClickListener(v -> {
@@ -120,34 +108,51 @@ public class ItemSellDialog extends BottomSheetDialogFragment {
         });
 
         if (savedInstanceState != null) {
-            marketFee = savedInstanceState.getDouble("marketFee");
-            currencyString = savedInstanceState.getString("currencyString");
-            currentReceiveText = savedInstanceState.getString("currentReceiveText");
-            currentPaysText = savedInstanceState.getString("currentPaysText");
+            double savedMarketFee = savedInstanceState.getDouble("marketFee");
+            String savedCurrencyString = savedInstanceState.getString("currencyString");
 
-            setTextChangedListeners(receiveEditText, paysEditText);
-            receiveEditText.setText(currentReceiveText);
-            paysEditText.setText(currentPaysText);
+            if (savedMarketFee != 0 && savedCurrencyString != null) {
+                setMarketFee(savedMarketFee);
+                setCurrencyString(savedCurrencyString);
+                currentReceiveText = savedInstanceState.getString("currentReceiveText");
+                currentPaysText = savedInstanceState.getString("currentPaysText");
 
-            loader.setVisibility(View.GONE);
-            mainConstraintLayout.setVisibility(View.VISIBLE);
+                try {
+                    setTextChangedListeners(receiveEditText, paysEditText);
+                } catch (Exception e) {
+                    Log.e(MainActivity.LOG_TAG,
+                            "Failed to set text changed listeners: " + e.getMessage());
+                }
+                receiveEditText.setText(currentReceiveText);
+                paysEditText.setText(currentPaysText);
 
-            return root;
+                loader.setVisibility(View.GONE);
+                mainConstraintLayout.setVisibility(View.VISIBLE);
+
+                return root;
+            }
         }
 
         new Thread(() -> {
-            try {
-                currencyString = getCurrencyString();
+            initializeMarket();
 
+            try {
                 requireActivity().runOnUiThread(() -> {
-                    setTextChangedListeners(receiveEditText, paysEditText);
+                    try {
+                        setTextChangedListeners(receiveEditText, paysEditText);
+                    }
+                    catch (Exception e) {
+                        Log.e(MainActivity.LOG_TAG,
+                                "Failed to set text changed listeners: " + e.getMessage());
+                    }
 
                     loader.setVisibility(View.GONE);
                     mainConstraintLayout.setVisibility(View.VISIBLE);
                 });
             }
             catch (Exception e) {
-                Log.e(MainActivity.LOG_TAG, "Failed to get currency string: " + e.getMessage());
+                Log.e(MainActivity.LOG_TAG,
+                        "Failed to load ItemSellDialog: " + e.getMessage());
             }
         }).start();
 
@@ -157,9 +162,13 @@ public class ItemSellDialog extends BottomSheetDialogFragment {
     private void makeSellRequest(int appId, String assetId) {
         if (currentReceiveText == null || currentReceiveText.equals("") ||
                 currentReceiveText.replaceAll("[^1-9]+", "").equals("")) {
-            requireActivity().runOnUiThread(() ->
-                    Toast.makeText(requireContext(), R.string.incorrect_price, Toast.LENGTH_LONG)
-                            .show());
+            requireActivity().runOnUiThread(() -> {
+                Toast.makeText(requireContext(), R.string.incorrect_price, Toast.LENGTH_LONG).show();
+                loader.setVisibility(View.GONE);
+                mainConstraintLayout.setVisibility(View.VISIBLE);
+            });
+
+            return;
         }
 
         try {
@@ -169,9 +178,11 @@ public class ItemSellDialog extends BottomSheetDialogFragment {
             Response response = requestManager.getClient().newCall(request).execute();
 
             if (response.code() != 200 || response.body() == null) {
-                requireActivity().runOnUiThread(() ->
-                        Toast.makeText(requireContext(), R.string.failed_sell, Toast.LENGTH_LONG)
-                                .show());
+                requireActivity().runOnUiThread(() -> {
+                    Toast.makeText(requireContext(), R.string.failed_sell, Toast.LENGTH_LONG).show();
+                    loader.setVisibility(View.GONE);
+                    mainConstraintLayout.setVisibility(View.VISIBLE);
+                });
                 return;
             }
 
@@ -222,113 +233,10 @@ public class ItemSellDialog extends BottomSheetDialogFragment {
                 .build();
     }
 
-    private String getSessionId(String cookie) {
-        String findString = "sessionid=";
-        int findStringIndex = cookie.indexOf(findString);
-
-        return cookie.substring(
-                findStringIndex + findString.length(),
-                cookie.indexOf(";", findStringIndex)
-        );
-    }
-
-    private String getCurrencyString() {
-        getSellData();
-
-        if (currencyCode == -1) {
-            return requireContext().getString(R.string.not_available);
-        }
-
-        String currencyData = getCurrencyData();
-        if (currencyData.equals("")){
-            return requireContext().getString(R.string.not_available);
-        }
-
-        try {
-            List<MarketCurrencyModel> currencyList = new Gson().fromJson(currencyData,
-                    new TypeToken<List<MarketCurrencyModel>>(){}.getType());
-
-            return Objects.requireNonNull(currencyList.stream()
-                    .filter(i -> i.eCurrencyCode == currencyCode)
-                    .findFirst().orElse(null)).strSymbol;
-        }
-        catch (Exception e) {
-            Log.e(MainActivity.LOG_TAG, "Failed to get currency string: " + e.getMessage());
-        }
-
-        return requireContext().getString(R.string.not_available);
-    }
-
-    private void getSellData() { // gets currency code and fee
-        try {
-            InventoryManager inventoryManager = new InventoryManager(new AuthModel(requireContext()));
-
-            Request request = inventoryManager.buildRequest(String.format(
-                    "https://steamcommunity.com/profiles/%s/inventory/", inventoryManager.getSteamId()),
-                    AuthModel.necessaryMarketCookie + inventoryManager.getAuthModel().loadCookie());
-
-            Response response = inventoryManager.getClient().newCall(request).execute();
-
-            String body = response.body().string();
-
-            String findString = "\"wallet_currency\":";
-            int findStringIndex = body.indexOf(findString);
-            currencyCode = Integer.parseInt(body.substring(
-                    findStringIndex + findString.length(),
-                    body.indexOf(",", findStringIndex)));
-
-            findString = "\"wallet_fee_percent\":\"";
-            findStringIndex = body.indexOf(findString);
-            marketFee += Double.parseDouble(body.substring(
-                    findStringIndex + findString.length(),
-                    body.indexOf("\",", findStringIndex)));
-
-            findString = "\"wallet_publisher_fee_percent_default\":\"";
-            findStringIndex = body.indexOf(findString);
-            marketFee += Double.parseDouble(body.substring(
-                    findStringIndex + findString.length(),
-                    body.indexOf("\",", findStringIndex)));
-
-            marketFee += 1;
-            return;
-        } catch (Exception e) {
-            Log.e(MainActivity.LOG_TAG, "Failed to get currency code: " + e.getMessage());
-        }
-
-        currencyCode = -1;
-        marketFee = 1;
-    }
-
-    private String getCurrencyData() {
-        InputStream inputStream = getResources().openRawResource(R.raw.market_currency_data);
-        Writer writer = new StringWriter();
-        char[] buffer = new char[1024];
-
-        try {
-            Reader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-            int n;
-            while ((n = reader.read(buffer)) != -1) {
-                writer.write(buffer, 0, n);
-            }
-        }
-        catch (Exception e) {
-            Log.e(MainActivity.LOG_TAG, "Failed to get currency data: " + e.getMessage());
-        }
-        finally {
-            try { inputStream.close(); }
-            catch (Exception e) {
-                Log.e(MainActivity.LOG_TAG,
-                        "Failed to close currency data inputStream: " + e.getMessage());
-            }
-        }
-
-        return writer.toString();
-    }
-
-    private void setTextChangedListeners(TextInputEditText receiveEditText, TextInputEditText paysEditText) {
+    private void setTextChangedListeners(TextInputEditText receiveEditText, TextInputEditText paysEditText) throws Exception {
         NumberFormat numberFormat = NumberFormat.getCurrencyInstance();
         DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
-        decimalFormatSymbols.setCurrencySymbol(currencyString + " ");
+        decimalFormatSymbols.setCurrencySymbol(getCurrencyString() + " ");
         ((DecimalFormat) numberFormat).setDecimalFormatSymbols(decimalFormatSymbols);
 
         receiveEditText.addTextChangedListener(new TextWatcher() {
@@ -336,31 +244,38 @@ public class ItemSellDialog extends BottomSheetDialogFragment {
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (currencyString != null && !charSequence.toString().equals(currentReceiveText)) {
-                    receiveEditText.removeTextChangedListener(this);
+                try {
+                    if (!charSequence.toString().equals(currentReceiveText)) {
+                        receiveEditText.removeTextChangedListener(this);
 
-                    Double inputDouble;
-                    try {
-                        inputDouble = Double.parseDouble(
-                                charSequence.toString().replaceAll("[^0-9]+", ""))/100;
+                        Double inputDouble;
+                        try {
+                            inputDouble = Double.parseDouble(
+                                    charSequence.toString().replaceAll("[^0-9]+", ""))/100;
+                        }
+                        catch (Exception e) {
+                            Log.e(MainActivity.LOG_TAG,
+                                    "Failed to parse inputDouble: " + e.getMessage());
+                            inputDouble = .0;
+                        }
+
+                        String formattedReceive = numberFormat.format(inputDouble);
+                        currentReceiveText = formattedReceive;
+
+                        String formattedPays = numberFormat.format(inputDouble * getMarketFee());
+                        currentPaysText = formattedPays;
+
+                        receiveEditText.setText(formattedReceive);
+                        receiveEditText.setSelection(formattedReceive.length());
+
+                        paysEditText.setText(formattedPays);
+                        paysEditText.setSelection(formattedPays.length());
+
+                        receiveEditText.addTextChangedListener(this);
                     }
-                    catch (Exception ignored) {
-                        inputDouble = .0;
-                    }
-
-                    String formattedReceive = numberFormat.format(inputDouble);
-                    currentReceiveText = formattedReceive;
-
-                    String formattedPays = numberFormat.format(inputDouble * marketFee);
-                    currentPaysText = formattedPays;
-
-                    receiveEditText.setText(formattedReceive);
-                    receiveEditText.setSelection(formattedReceive.length());
-
-                    paysEditText.setText(formattedPays);
-                    paysEditText.setSelection(formattedPays.length());
-
-                    receiveEditText.addTextChangedListener(this);
+                } catch (Exception e) {
+                    Log.e(MainActivity.LOG_TAG,
+                            "Failed to process textChanged: " + e.getMessage());
                 }
             }
             @Override
@@ -372,31 +287,36 @@ public class ItemSellDialog extends BottomSheetDialogFragment {
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (currencyString != null && !charSequence.toString().equals(currentPaysText)) {
-                    paysEditText.removeTextChangedListener(this);
+                try {
+                    if (!charSequence.toString().equals(currentPaysText)) {
+                        paysEditText.removeTextChangedListener(this);
 
-                    Double inputDouble;
-                    try {
-                        inputDouble = Double.parseDouble(
-                                charSequence.toString().replaceAll("[^0-9]+", ""))/100;
+                        Double inputDouble;
+                        try {
+                            inputDouble = Double.parseDouble(
+                                    charSequence.toString().replaceAll("[^0-9]+", ""))/100;
+                        }
+                        catch (Exception ignored) {
+                            inputDouble = .0;
+                        }
+
+                        String formattedPays = numberFormat.format(inputDouble);
+                        currentPaysText = formattedPays;
+
+                        String formattedReceive = numberFormat.format(inputDouble / getMarketFee());
+                        currentReceiveText = formattedReceive;
+
+                        paysEditText.setText(formattedPays);
+                        paysEditText.setSelection(formattedPays.length());
+
+                        receiveEditText.setText(formattedReceive);
+                        receiveEditText.setSelection(formattedReceive.length());
+
+                        paysEditText.addTextChangedListener(this);
                     }
-                    catch (Exception ignored) {
-                        inputDouble = .0;
-                    }
-
-                    String formattedPays = numberFormat.format(inputDouble);
-                    currentPaysText = formattedPays;
-
-                    String formattedReceive = numberFormat.format(inputDouble / marketFee);
-                    currentReceiveText = formattedReceive;
-
-                    paysEditText.setText(formattedPays);
-                    paysEditText.setSelection(formattedPays.length());
-
-                    receiveEditText.setText(formattedReceive);
-                    receiveEditText.setSelection(formattedReceive.length());
-
-                    paysEditText.addTextChangedListener(this);
+                } catch (Exception e) {
+                    Log.e(MainActivity.LOG_TAG,
+                            "Failed to process textChanged: " + e.getMessage());
                 }
             }
             @Override
@@ -408,8 +328,11 @@ public class ItemSellDialog extends BottomSheetDialogFragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putDouble("marketFee", marketFee);
-        outState.putString("currencyString", currencyString);
+        try {
+            outState.putDouble("marketFee", getMarketFee());
+            outState.putString("currencyString", getCurrencyString());
+        } catch (Exception ignored) { }
+
         outState.putString("currentReceiveText", currentReceiveText);
         outState.putString("currentPaysText", currentPaysText);
     }
