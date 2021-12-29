@@ -39,7 +39,7 @@ import com.voxeldev.steammarkethelper.models.market.MarketItemModel;
 import com.voxeldev.steammarkethelper.models.market.MarketItemPriceHistory;
 import com.voxeldev.steammarkethelper.models.market.MarketManager;
 import com.voxeldev.steammarkethelper.models.market.MarketOrderModel;
-import com.voxeldev.steammarkethelper.ui.charts.ChartMarkerView;
+import com.voxeldev.steammarkethelper.ui.misc.ChartMarkerView;
 
 import org.jetbrains.annotations.NotNull;
 

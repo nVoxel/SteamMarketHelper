@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -28,6 +29,7 @@ import com.voxeldev.steammarkethelper.R;
 import com.voxeldev.steammarkethelper.models.auth.AuthModel;
 import com.voxeldev.steammarkethelper.models.common.RequestManager;
 import com.voxeldev.steammarkethelper.models.market.BuyResponseModel;
+import com.voxeldev.steammarkethelper.ui.misc.DismissAnimatorListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -46,6 +48,7 @@ public class ItemBuyDialog extends MarketActionDialog {
     private String currentMaxPriceText;
     private ConstraintLayout mainConstraintLayout;
     private CircularProgressIndicator loader;
+    private LottieAnimationView animationView;
 
     public static ItemBuyDialog getInstance(int appId, String itemName,
                                             String marketHashName, String itemIconUrl) {
@@ -98,6 +101,8 @@ public class ItemBuyDialog extends MarketActionDialog {
         mainConstraintLayout = root.findViewById(R.id.itembuy_main);
         loader = root.findViewById(R.id.itembuy_loader);
 
+        animationView = root.findViewById(R.id.itembuy_animationview);
+
         MaterialButton buyButton = root.findViewById(R.id.itembuy_buybutton);
         buyButton.setOnClickListener(v -> {
             mainConstraintLayout.setVisibility(View.INVISIBLE);
@@ -109,12 +114,12 @@ public class ItemBuyDialog extends MarketActionDialog {
         });
 
         if (savedInstanceState != null) {
+            int savedCurrencyCode = savedInstanceState.getInt("currencyCode", -2);
             double savedMarketFee = savedInstanceState.getDouble("marketFee");
             String savedCurrencyString = savedInstanceState.getString("currencyString");
 
-            if (savedMarketFee != 0 && savedCurrencyString != null) {
-                setMarketFee(savedMarketFee);
-                setCurrencyString(savedCurrencyString);
+            if (savedCurrencyCode != -2 && savedMarketFee != 0 && savedCurrencyString != null) {
+                initializeMarket(savedCurrencyCode, savedMarketFee, savedCurrencyString);
                 currentPayText = savedInstanceState.getString("currentPayText");
                 currentAmountText = savedInstanceState.getString("currentAmountText");
                 currentMaxPriceText = savedInstanceState.getString("currentMaxPriceText");
@@ -227,17 +232,22 @@ public class ItemBuyDialog extends MarketActionDialog {
                     BuyResponseModel.class);
 
             requireActivity().runOnUiThread(() -> {
+                loader.setVisibility(View.GONE);
+                animationView.setVisibility(View.VISIBLE);
+
                 if (buyResponseModel.success != 1) {
-                    Toast.makeText(requireContext(), R.string.failed_buy, Toast.LENGTH_LONG)
-                            .show();
+                    animationView.setAnimation(R.raw.market_action_failed);
+                    animationView.addAnimatorListener(new DismissAnimatorListener(this,
+                            getString(R.string.failed_buy)));
                 }
                 else {
-                    Toast.makeText(requireContext(), R.string.buy_success, Toast.LENGTH_LONG)
-                            .show();
+                    animationView.setAnimation(R.raw.market_action_success);
+                    animationView.addAnimatorListener(new DismissAnimatorListener(this,
+                            getString(R.string.buy_success)));
                 }
-            });
 
-            dismiss();
+                animationView.playAnimation();
+            });
         }
         catch (Exception e) {
             Log.e(MainActivity.LOG_TAG, "Failed to make buy request: " + e.getMessage());
@@ -394,6 +404,7 @@ public class ItemBuyDialog extends MarketActionDialog {
         super.onSaveInstanceState(outState);
 
         try {
+            outState.putInt("currencyCode", getCurrencyCode());
             outState.putDouble("marketFee", getMarketFee());
             outState.putString("currencyString", getCurrencyString());
         } catch (Exception ignored) { }

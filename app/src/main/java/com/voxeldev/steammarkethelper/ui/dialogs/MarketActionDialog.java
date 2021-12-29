@@ -24,7 +24,7 @@ import java.util.Objects;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public abstract class MarketActionDialog extends BottomSheetDialogFragment {
+public class MarketActionDialog extends BottomSheetDialogFragment {
 
     private int currencyCode = -2;
     private double marketFee;
@@ -33,6 +33,16 @@ public abstract class MarketActionDialog extends BottomSheetDialogFragment {
     public void initializeMarket() {
         loadMarketData();
         loadCurrencyString();
+    }
+
+    public void initializeMarket(int currencyCode, double marketFee, String currencyString) {
+        this.currencyCode = currencyCode;
+        initializeMarket(marketFee, currencyString);
+    }
+
+    public void initializeMarket(double marketFee, String currencyString) {
+        this.marketFee = marketFee;
+        this.currencyString = currencyString;
     }
 
     public int getCurrencyCode() throws Exception {
@@ -57,14 +67,6 @@ public abstract class MarketActionDialog extends BottomSheetDialogFragment {
         }
 
         return currencyString;
-    }
-
-    public void setMarketFee(double marketFee) {
-        this.marketFee = marketFee;
-    }
-
-    public void setCurrencyString(String currencyString) {
-        this.currencyString = currencyString;
     }
 
     private void loadCurrencyString() {

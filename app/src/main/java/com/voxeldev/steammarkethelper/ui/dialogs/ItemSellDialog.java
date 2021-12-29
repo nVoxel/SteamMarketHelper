@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -28,6 +29,7 @@ import com.voxeldev.steammarkethelper.R;
 import com.voxeldev.steammarkethelper.models.auth.AuthModel;
 import com.voxeldev.steammarkethelper.models.common.RequestManager;
 import com.voxeldev.steammarkethelper.models.market.SellResponseModel;
+import com.voxeldev.steammarkethelper.ui.misc.DismissAnimatorListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -45,6 +47,7 @@ public class ItemSellDialog extends MarketActionDialog {
     private String currentPaysText;
     private ConstraintLayout mainConstraintLayout;
     private CircularProgressIndicator loader;
+    private LottieAnimationView animationView;
 
     public static ItemSellDialog getInstance(int appId, String assetId,
                                              String itemName, String itemIconUrl) {
@@ -97,6 +100,8 @@ public class ItemSellDialog extends MarketActionDialog {
         mainConstraintLayout = root.findViewById(R.id.itemsell_main);
         loader = root.findViewById(R.id.itemsell_loader);
 
+        animationView = root.findViewById(R.id.itemsell_animationview);
+
         MaterialButton sellButton = root.findViewById(R.id.itemsell_sellbutton);
         sellButton.setOnClickListener(v -> {
             mainConstraintLayout.setVisibility(View.INVISIBLE);
@@ -112,8 +117,7 @@ public class ItemSellDialog extends MarketActionDialog {
             String savedCurrencyString = savedInstanceState.getString("currencyString");
 
             if (savedMarketFee != 0 && savedCurrencyString != null) {
-                setMarketFee(savedMarketFee);
-                setCurrencyString(savedCurrencyString);
+                initializeMarket(savedMarketFee, savedCurrencyString);
                 currentReceiveText = savedInstanceState.getString("currentReceiveText");
                 currentPaysText = savedInstanceState.getString("currentPaysText");
 
@@ -190,25 +194,32 @@ public class ItemSellDialog extends MarketActionDialog {
                     SellResponseModel.class);
 
             requireActivity().runOnUiThread(() -> {
+                loader.setVisibility(View.GONE);
+                animationView.setVisibility(View.VISIBLE);
+
                 if (!sellResponseModel.success) {
-                    Toast.makeText(requireContext(), R.string.failed_sell, Toast.LENGTH_LONG)
-                            .show();
+                    animationView.setAnimation(R.raw.market_action_failed);
+                    animationView.addAnimatorListener(new DismissAnimatorListener(this,
+                            getString(R.string.failed_sell)));
                 }
                 else if (sellResponseModel.needs_mobile_confirmation) {
-                    Toast.makeText(requireContext(), R.string.sell_mobile_confirmation, Toast.LENGTH_LONG)
-                            .show();
+                    animationView.setAnimation(R.raw.market_action_phone);
+                    animationView.addAnimatorListener(new DismissAnimatorListener(this,
+                            getString(R.string.sell_mobile_confirmation)));
                 }
                 else if (sellResponseModel.needs_email_confirmation) {
-                    Toast.makeText(requireContext(), R.string.sell_email_confirmation, Toast.LENGTH_LONG)
-                            .show();
+                    animationView.setAnimation(R.raw.market_action_phone);
+                    animationView.addAnimatorListener(new DismissAnimatorListener(this,
+                            getString(R.string.sell_email_confirmation)));
                 }
                 else {
-                    Toast.makeText(requireContext(), R.string.sell_success, Toast.LENGTH_LONG)
-                            .show();
+                    animationView.setAnimation(R.raw.market_action_success);
+                    animationView.addAnimatorListener(new DismissAnimatorListener(this,
+                            getString(R.string.sell_success)));
                 }
-            });
 
-            dismiss();
+                animationView.playAnimation();
+            });
         } catch (Exception e) {
             Log.e(MainActivity.LOG_TAG, "Failed to make sell request: " + e.getMessage());
         }

@@ -1,4 +1,4 @@
-package com.voxeldev.steammarkethelper.ui.charts;
+package com.voxeldev.steammarkethelper.ui.misc;
 
 import android.content.Context;
 import android.graphics.Canvas;
