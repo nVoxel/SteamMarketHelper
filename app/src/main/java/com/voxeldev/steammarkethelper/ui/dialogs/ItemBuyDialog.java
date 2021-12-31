@@ -108,9 +108,16 @@ public class ItemBuyDialog extends MarketActionDialog {
             mainConstraintLayout.setVisibility(View.INVISIBLE);
             loader.setVisibility(View.VISIBLE);
 
-            new Thread(() ->
-                    makeBuyRequest(args.getInt("appId"), args.getString("marketHashName")))
-                    .start();
+            new MarketActionWarningDialog(requireContext(),
+                    new Thread(() ->
+                            makeBuyRequest(args.getInt("appId"),
+                                    args.getString("marketHashName"))),
+                    new Thread(() ->
+                            requireActivity().runOnUiThread(() -> {
+                                mainConstraintLayout.setVisibility(View.VISIBLE);
+                                loader.setVisibility(View.GONE);
+                            }))
+            ).show();
         });
 
         if (savedInstanceState != null) {

@@ -1,11 +1,6 @@
 # SteamMarketHelper (SMH)
 Steam Marketplace Mobile Client for Android
 
-## ❗ Note
-Application in this branch has Steam Market actions. It can place and remove buy/sell orders.
-But it seems, that Steam can count it as Market bots, which are against its ToS, so I'm not responsible for your account (in case of ban e.g.).
-### Use it at your own risk!
-
 ## 📝 About
 SMH is a native Steam Marketplace viewer.\
 It's possible to view any game's marketplace with it.\

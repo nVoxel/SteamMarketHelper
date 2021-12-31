@@ -67,4 +67,9 @@
     <string name="listings_remove_confirmation">Вы действительно хотите убрать запрос?</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
+    <string name="market_action_warning_title">Внимание</string>
+    <string name="market_action_warning">Вы собираетесь осуществить коммерческое действие, однако Steam может расценивать это, как бота для торговой площадки, что является нарушением правил сервиса. Поэтому я (разработчик приложения) не несу ответственности за ваш аккаунт (например, в случае его блокировки). Продолжайте на свой страх и риск.</string>
+    <string name="market_action_continue">Продолжить</string>
+    <string name="market_action_cancel">Отмена</string>
+    <string name="market_action_canceled">Действие отменено</string>
 </resources>

@@ -67,4 +67,9 @@
     <string name="listings_remove_confirmation">Are you sure you want to remove the listing?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="market_action_warning_title">Warning</string>
+    <string name="market_action_warning">You are going to make commerce action, but it seems, that Steam can count it as Market bots, which are against its ToS. So I (developer of the application) am not responsible for your account (in case of ban e.g.). Continue at your own risk.</string>
+    <string name="market_action_continue">Continue</string>
+    <string name="market_action_cancel">Cancel</string>
+    <string name="market_action_canceled">Action was canceled</string>
 </resources>

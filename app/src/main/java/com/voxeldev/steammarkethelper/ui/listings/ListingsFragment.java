@@ -30,6 +30,7 @@ import com.voxeldev.steammarkethelper.models.common.RequestManager;
 import com.voxeldev.steammarkethelper.models.listings.ListingModel;
 import com.voxeldev.steammarkethelper.models.listings.ListingsManager;
 import com.voxeldev.steammarkethelper.ui.dialogs.MarketActionDialog;
+import com.voxeldev.steammarkethelper.ui.dialogs.MarketActionWarningDialog;
 
 import java.util.List;
 
@@ -197,19 +198,25 @@ class ListingsRecyclerCallback extends ItemTouchHelper.SimpleCallback {
             RequestManager requestManager = new RequestManager(
                     new AuthModel(activity.getApplicationContext()));
 
-            new AlertDialog.Builder(activity)
-                    .setTitle(adapter.getListings().get(viewHolder.getLayoutPosition()).name)
-                    .setMessage(R.string.listings_remove_confirmation)
-                    .setPositiveButton(R.string.yes, (dialog, which) ->
-                            processRemove(requestManager, viewHolder))
-                    .setNegativeButton(R.string.no, (dialog, which) -> {
-                        Log.d(MainActivity.LOG_TAG, "User cancelled listing removal");
-                        adapter.notifyDataSetChanged();
-                    })
-                    .create()
-                    .show();
-        }
-        catch (Exception e) {
+            new MarketActionWarningDialog(activity,
+                    new Thread(() ->
+                            activity.runOnUiThread(() ->
+                                    new AlertDialog.Builder(activity)
+                                            .setTitle(adapter.getListings().get(viewHolder.getLayoutPosition()).name)
+                                            .setMessage(R.string.listings_remove_confirmation)
+                                            .setPositiveButton(R.string.yes, (dialog, which) ->
+                                                    processRemove(requestManager, viewHolder))
+                                            .setNegativeButton(R.string.no, (dialog, which) -> {
+                                                Log.d(MainActivity.LOG_TAG, "User cancelled listing removal");
+                                                adapter.notifyDataSetChanged();
+                                            })
+                                            .setCancelable(false)
+                                            .create()
+                                            .show())),
+                    new Thread(() ->
+                            activity.runOnUiThread(adapter::notifyDataSetChanged))
+            ).show();
+        } catch (Exception e) {
             Log.e(MainActivity.LOG_TAG, "Failed to process onSwiped in listings");
         }
     }
