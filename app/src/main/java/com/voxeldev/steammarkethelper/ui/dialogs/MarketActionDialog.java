@@ -168,7 +168,7 @@ public class MarketActionDialog extends BottomSheetDialogFragment {
         return writer.toString();
     }
 
-    protected String getSessionId(String cookie) {
+    public static String getSessionId(String cookie) {
         String findString = "sessionid=";
         int findStringIndex = cookie.indexOf(findString);
 

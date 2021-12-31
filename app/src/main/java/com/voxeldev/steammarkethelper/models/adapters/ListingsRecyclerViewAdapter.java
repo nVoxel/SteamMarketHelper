@@ -96,6 +96,15 @@ public class ListingsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                 .into(((ViewHolder)holder).getIconImageView());
     }
 
+    public List<ListingModel> getListings() {
+        return listings;
+    }
+
+    public void removeListing(int position) {
+        listings.remove(position);
+        notifyItemRemoved(position);
+    }
+
     @Override
     public int getItemCount() {
         if (listings == null) {

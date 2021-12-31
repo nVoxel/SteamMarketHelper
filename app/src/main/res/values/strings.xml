@@ -57,4 +57,14 @@
     <string name="failed_buy">Failed to make buy request</string>
     <string name="buy_success">Created buy order successfully</string>
     <string name="market_hint">Click on item to view its details. Long click to create buy order.</string>
+    <string name="sell_remove">Remove sell listing</string>
+    <string name="buy_remove">Remove buy order</string>
+    <string name="sell_remove_successful">Sell listing was removed</string>
+    <string name="buy_remove_successful">Buy order was removed</string>
+    <string name="sell_remove_failed">Failed to remove sell listing</string>
+    <string name="buy_remove_failed">Failed to remove buy order</string>
+    <string name="listings_hint">Click on listing to view its details.Swipe to remove it.</string>
+    <string name="listings_remove_confirmation">Are you sure you want to remove the listing?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

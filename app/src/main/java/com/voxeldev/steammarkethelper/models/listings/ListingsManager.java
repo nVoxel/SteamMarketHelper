@@ -21,8 +21,8 @@ import okhttp3.Response;
 
 public class ListingsManager extends RequestManager {
 
-    private Context context;
-    private String gameName;
+    private final Context context;
+    private final String gameName;
     private Document marketPage;
 
     public ListingsManager(Context context, String gameName) {
@@ -66,9 +66,14 @@ public class ListingsManager extends RequestManager {
         for (Element element : allElements) {
             String elementGameName = element.selectFirst("span.market_listing_game_name").text();
 
+            String id = element.id().contains("mylisting_") ?
+                    element.id().replace("mylisting_", "") :
+                    element.id().replace("mybuyorder_", "");
+
             if (elementGameName != null && elementGameName.equals(gameName)) {
                 element.select("span.market_listing_inline_buyorder_qty").remove();
                 gameListings.add(new ListingModel(
+                        id,
                         element.selectFirst("img").attr("src"),
                         element.selectFirst(
                                 "div.market_listing_item_name_block a.market_listing_item_name_link")

@@ -57,4 +57,14 @@
     <string name="failed_buy">Не удалось отправить запрос на покупку</string>
     <string name="buy_success">Запрос на покупку создан успешно</string>
     <string name="market_hint">Нажмите на предмет, чтобы посмотреть информацию. Удерживайте, чтобы создать запрос на покупку.</string>
+    <string name="sell_remove">Убрать лот на продажу</string>
+    <string name="buy_remove">Убрать запрос на покупку</string>
+    <string name="sell_remove_successful">Лот на продажу убран</string>
+    <string name="buy_remove_successful">Запрос на покупку убран</string>
+    <string name="sell_remove_failed">Не удалось убрать лот на продажу</string>
+    <string name="buy_remove_failed">Не удалось убрать запрос на покупку</string>
+    <string name="listings_hint">Нажмите на запрос, чтобы посмотреть информацию. Свайпните, чтобы убрать его.</string>
+    <string name="listings_remove_confirmation">Вы действительно хотите убрать запрос?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
 </resources>

@@ -7,53 +7,75 @@
     xmlns:tools="http://schemas.android.com/tools" >
 
     <TextView
-        android:id="@+id/listings_sell_textview"
+        android:id="@+id/textView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/my_sell_listings"
-        android:textAlignment="center"
+        android:layout_marginTop="3dp"
+        android:gravity="center"
+        android:text="@string/listings_hint"
         android:textColor="@color/textColor"
-        android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/listings_sell_recyclerview"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/listings_guideline_half"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/listings_sell_textview"
-        tools:listitem="@layout/item_listingsrecyclerview" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/listings_guideline_half"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
-
-    <TextView
-        android:id="@+id/listings_buy_textview"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/my_buy_orders"
-        android:textAlignment="center"
-        android:textColor="@color/textColor"
-        android:textSize="17sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/listings_guideline_half" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/listings_buy_recyclerview"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_marginTop="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/listings_buy_textview"
-        tools:listitem="@layout/item_listingsrecyclerview" />
+        app:layout_constraintTop_toBottomOf="@+id/textView">
+
+        <TextView
+            android:id="@+id/listings_sell_textview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/my_sell_listings"
+            android:textAlignment="center"
+            android:textColor="@color/textColor"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listings_sell_recyclerview"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/listings_guideline_half"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/listings_sell_textview"
+            tools:listitem="@layout/item_listingsrecyclerview" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/listings_guideline_half"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <TextView
+            android:id="@+id/listings_buy_textview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/my_buy_orders"
+            android:textAlignment="center"
+            android:textColor="@color/textColor"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/listings_guideline_half" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listings_buy_recyclerview"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/listings_buy_textview"
+            tools:listitem="@layout/item_listingsrecyclerview" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
