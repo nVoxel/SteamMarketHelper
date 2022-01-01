@@ -8,6 +8,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -78,12 +79,12 @@ public class MainActivity extends AppCompatActivity {
                 AuthModel authModel = new AuthModel(getApplicationContext());
                 String cookie = authModel.loadCookie();
 
-                if (cookie == null || authModel.checkAuth(cookie)){
+                if (cookie == null || authModel.checkAuth(cookie)) {
                     startActivity(new Intent(getApplicationContext(), AuthActivity.class));
                     finish();
                 }
             }
-            catch (Exception e){
+            catch (Exception e) {
                 Log.e(LOG_TAG, e.getMessage());
                 startActivity(new Intent(getApplicationContext(), AuthActivity.class));
                 finish();
@@ -96,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         gamesRecyclerView = findViewById(R.id.games_recyclerview);
         gamesRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             try{
                 profileImageUrl = savedInstanceState.getString("profileImageUrl");
                 profileName = savedInstanceState.getString("profileName");
@@ -107,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 setAdapter();
                 return;
             }
-            catch (Exception e){
+            catch (Exception e) {
                 Log.e(LOG_TAG, "Failed to load instanceState: " + e.getMessage());
             }
         }
@@ -140,14 +141,13 @@ public class MainActivity extends AppCompatActivity {
                     setAdapter();
                 });
             }
-            catch (Exception e){
+            catch (Exception e) {
                 Log.e(LOG_TAG, e.getMessage());
             }
         }).start();
     }
 
     private void setProfileCard() {
-        profileCardLoader.setVisibility(View.GONE);
         profileCardTextView.setText(profileName == null ?
                 getString(R.string.app_name) : profileName);
 
@@ -174,6 +174,10 @@ public class MainActivity extends AppCompatActivity {
                         profileCardTextView.setCompoundDrawablesWithIntrinsicBounds(placeholder, null, null, null);
                     }
                 });
+
+        profileCardLoader.setVisibility(View.GONE);
+        makeTransition(Gravity.START, 500, findViewById(R.id.profile_cardview), profileCardTextView);
+        profileCardTextView.setVisibility(View.VISIBLE);
     }
 
     private void setAdapter() {
@@ -184,16 +188,19 @@ public class MainActivity extends AppCompatActivity {
         ConstraintLayout gamesLayout = findViewById(R.id.layout_games);
 
         gamesLoader.setVisibility(View.GONE);
-
-        Transition transition = new Slide(Gravity.BOTTOM);
-        transition.setDuration(300);
-        transition.addTarget(gamesLayout);
-
-        TransitionManager.beginDelayedTransition(findViewById(R.id.root), transition);
+        makeTransition(Gravity.BOTTOM, 300, findViewById(R.id.root), gamesLayout);
         gamesLayout.setVisibility(View.VISIBLE);
     }
 
-    public static void setTheme(String theme){
+    private void makeTransition(int slideEdge, int duration, View root, View target) {
+        Transition transition = new Slide(slideEdge);
+        transition.setDuration(duration);
+        transition.addTarget(target);
+
+        TransitionManager.beginDelayedTransition((ViewGroup) root, transition);
+    }
+
+    public static void setTheme(String theme) {
         switch (theme) {
             case "light":
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
@@ -217,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
             outState.putParcelable("gamesRecyclerSavedState", gamesRecyclerView
                     .getLayoutManager().onSaveInstanceState());
         }
-        catch (Exception e){
+        catch (Exception e) {
             Log.e(LOG_TAG, "Failed onSaveInstanceState in MainActivity: " + e.getMessage());
         }
     }

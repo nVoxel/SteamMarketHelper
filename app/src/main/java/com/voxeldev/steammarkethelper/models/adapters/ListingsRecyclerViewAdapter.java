@@ -73,13 +73,13 @@ public class ListingsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                 .inflate(R.layout.item_listingsrecyclerview, parent, false);
 
         view.setOnClickListener(clickView -> {
-            if (fragmentManager.getFragments().size() < 1){
+            if (fragmentManager.getFragments().size() < 1) {
                 try {
                     ItemInfoDialog itemInfoDialog = ItemInfoDialog.getInstance(
                             listings.get(recyclerView.getChildLayoutPosition(clickView)));
                     itemInfoDialog.showNow(fragmentManager, "listingsItemInfoDialog");
                 }
-                catch (Exception e){ Log.e(MainActivity.LOG_TAG, e.toString()); }
+                catch (Exception e) { Log.e(MainActivity.LOG_TAG, e.toString()); }
             }
         });
 

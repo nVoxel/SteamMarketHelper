@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +15,16 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.Slide;
+import androidx.transition.Transition;
+import androidx.transition.TransitionManager;
 
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.voxeldev.steammarkethelper.MainActivity;
@@ -47,6 +53,9 @@ public class ListingsFragment extends Fragment {
     private RecyclerView buyRecyclerView;
     private TextView sellTextView;
     private TextView buyTextView;
+    private CircularProgressIndicator listingsLoader;
+    private ConstraintLayout listingsMain;
+    private ConstraintLayout listingsContainer;
 
     @Nullable
     @Override
@@ -63,15 +72,19 @@ public class ListingsFragment extends Fragment {
         sellTextView = root.findViewById(R.id.listings_sell_textview);
         buyTextView = root.findViewById(R.id.listings_buy_textview);
 
-        if (savedInstanceState != null){
+        listingsLoader = root.findViewById(R.id.listings_loader);
+        listingsMain = root.findViewById(R.id.listings_main);
+        listingsContainer = root.findViewById(R.id.listings_container);
+
+        if (savedInstanceState != null) {
             Gson gson = new Gson();
 
             sellListings = gson.fromJson(
                     savedInstanceState.getString("sellListingsSerialized"),
-                    new TypeToken<List<ListingModel>>(){}.getType());
+                    new TypeToken<List<ListingModel>>() {}.getType());
             buyOrders = gson.fromJson(
                     savedInstanceState.getString("buyOrdersSerialized"),
-                    new TypeToken<List<ListingModel>>(){}.getType());
+                    new TypeToken<List<ListingModel>>() {}.getType());
 
             setViews();
             return root;
@@ -145,6 +158,16 @@ public class ListingsFragment extends Fragment {
                 (sellListings == null) ? 0 : sellListings.size()));
         buyTextView.setText(String.format(getString(R.string.my_buy_orders_placeholder),
                 (buyOrders == null) ? 0 : buyOrders.size()));
+
+        listingsLoader.setVisibility(View.GONE);
+
+        Transition transition = new Slide(Gravity.BOTTOM);
+        transition.setDuration(300);
+        transition.addTarget(listingsContainer);
+
+        TransitionManager.beginDelayedTransition(listingsMain, transition);
+
+        listingsContainer.setVisibility(View.VISIBLE);
     }
 
     @Override

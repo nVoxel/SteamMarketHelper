@@ -22,7 +22,7 @@ public class InventoryManager extends RequestManager {
         super(authModel);
     }
 
-    public InventoryModel getInventoryModel(int gameId){
+    public InventoryModel getInventoryModel(int gameId) {
         try{
             Request request = buildRequest(String.format(Locale.getDefault(),
                     "https://steamcommunity.com/inventory/%s/%d/2?l=english&count=5000&norender=1",
@@ -33,13 +33,13 @@ public class InventoryManager extends RequestManager {
 
             return new Gson().fromJson(response.body().string(), InventoryModel.class);
         }
-        catch (Exception e){
+        catch (Exception e) {
             Log.e(MainActivity.LOG_TAG, e.toString());
             return null;
         }
     }
 
-    public String getWalletBalance(){
+    public String getWalletBalance() {
         try {
             Request request = buildRequest(
                     "https://store.steampowered.com/account/history",
@@ -53,15 +53,15 @@ public class InventoryManager extends RequestManager {
 
             return balance.text();
         }
-        catch (Exception e){ Log.e(MainActivity.LOG_TAG, e.toString()); }
+        catch (Exception e) { Log.e(MainActivity.LOG_TAG, e.toString()); }
         return null;
     }
 
-    public String getSteamId(){
+    public String getSteamId() {
         try {
             String cookie = getAuthModel().loadCookie();
 
-            if (cookie == null || cookie.equals("")){ return null; }
+            if (cookie == null || cookie.equals("")) { return null; }
 
             String findStr = "steamLoginSecure=";
             int index1 = cookie.indexOf(findStr);
@@ -69,7 +69,7 @@ public class InventoryManager extends RequestManager {
 
             return cookie.substring(index1 + findStr.length(), index2);
         }
-        catch (Exception e){
+        catch (Exception e) {
             Log.e(MainActivity.LOG_TAG, e.toString());
             return null;
         }

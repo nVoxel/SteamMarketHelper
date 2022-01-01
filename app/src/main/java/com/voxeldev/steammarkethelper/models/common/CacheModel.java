@@ -20,12 +20,12 @@ public class CacheModel {
     public String readFile(String filename) throws Exception {
         File file = new File(context.getFilesDir().getPath() + "/" + filename);
 
-        if (file.exists()){
+        if (file.exists()) {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             StringBuilder stringBuilder = new StringBuilder();
 
             Scanner scanner = new Scanner(reader);
-            while (scanner.hasNextLine()){
+            while (scanner.hasNextLine()) {
                 stringBuilder.append(scanner.nextLine());
             }
             scanner.close();

@@ -29,7 +29,7 @@ public class MarketManager extends RequestManager {
         this.gameId = gameId;
     }
 
-    public MarketModel getMarketModel(int start, int count, int appId, String searchQuery){
+    public MarketModel getMarketModel(int start, int count, int appId, String searchQuery) {
         try {
             Request request = buildRequest(String.format(Locale.getDefault(),
                     "https://steamcommunity.com/market/search/render/?query=%s&start=%d&count=%d&search_descriptions=0&sort_column=popular&sort_dir=desc&appid=%d&norender=1",
@@ -42,20 +42,20 @@ public class MarketManager extends RequestManager {
 
             return gson.fromJson(response.body().string(), MarketModel.class);
         }
-        catch (Exception e){
+        catch (Exception e) {
             Log.d(MainActivity.LOG_TAG, e.toString());
             return null;
         }
     }
 
-    public MarketItemCommodityModel getItemCommodity(String name){
+    public MarketItemCommodityModel getItemCommodity(String name) {
         try{
             NameIdDao nameIdDao = database.nameIdDao();
 
             NameIdPair nameIdPair = nameIdDao.getNameId(name);
             String id;
 
-            if (nameIdPair == null || nameIdPair.nameId == null || nameIdPair.nameId.equals("")){
+            if (nameIdPair == null || nameIdPair.nameId == null || nameIdPair.nameId.equals("")) {
                 id = loadItemId(name);
 
                 nameIdPair = new NameIdPair(name, id);
@@ -67,7 +67,7 @@ public class MarketManager extends RequestManager {
 
             MarketItemCommodityModel marketItemCommodityModel = loadItemCommodity(id);
 
-            if (marketItemCommodityModel == null){ //Seems itemId in our db is not valid
+            if (marketItemCommodityModel == null) { //Seems itemId in our db is not valid
                 Log.e(MainActivity.LOG_TAG, "itemId is not valid: " + name);
                 id = loadItemId(name);
                 nameIdPair.nameId = id;
@@ -85,7 +85,7 @@ public class MarketManager extends RequestManager {
         }
     }
 
-    private MarketItemCommodityModel loadItemCommodity(String id){
+    private MarketItemCommodityModel loadItemCommodity(String id) {
         try{
             Request request = buildRequest(String.format(Locale.getDefault(),
                     "https://steamcommunity.com/market/itemordershistogram?country=RU&language=english&currency=5&item_nameid=%s&two_factor=0&norender=1", id),
@@ -99,7 +99,7 @@ public class MarketManager extends RequestManager {
         }
     }
 
-    public MarketItemPriceHistory loadItemPriceHistory(String name){
+    public MarketItemPriceHistory loadItemPriceHistory(String name) {
         try{
             Request request = buildRequest(
                     String.format(
@@ -112,7 +112,7 @@ public class MarketManager extends RequestManager {
 
             return new Gson().fromJson(response.body().string(), MarketItemPriceHistory.class);
         }
-        catch (Exception e){
+        catch (Exception e) {
             Log.e(MainActivity.LOG_TAG, e.toString());
             return null;
         }

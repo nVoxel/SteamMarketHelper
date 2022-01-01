@@ -3,6 +3,7 @@ package com.voxeldev.steammarkethelper.ui.inventory;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.transition.Slide;
+import androidx.transition.Transition;
+import androidx.transition.TransitionManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
@@ -59,22 +63,18 @@ public class InventoryFragment extends Fragment {
         FloatingActionButton marketGoTopButton = root.findViewById(R.id.inventory_goTopButton);
         marketGoTopButton.setOnClickListener(v -> ((StaggeredGridLayoutManager)inventoryRecyclerView.getLayoutManager()).scrollToPositionWithOffset(0, 0));
 
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             loadedInventory = new Gson().fromJson(savedInstanceState.getString("inventorySerialized", ""),
                     InventoryModel.class);
             setAdapter(inventoryRecyclerView);
-            inventoryLoader.setVisibility(View.GONE);
-            inventoryRecyclerView.setVisibility(View.VISIBLE);
             return root;
         }
 
         MarketActivity marketActivity = (MarketActivity)requireActivity();
-        if (marketActivity.loadedInventory != null && marketActivity.inventoryRecyclerViewSavedState != null){
+        if (marketActivity.loadedInventory != null && marketActivity.inventoryRecyclerViewSavedState != null) {
             loadedInventory = marketActivity.loadedInventory;
             setAdapter(inventoryRecyclerView);
             inventoryRecyclerView.getLayoutManager().onRestoreInstanceState(marketActivity.inventoryRecyclerViewSavedState);
-            inventoryLoader.setVisibility(View.GONE);
-            inventoryRecyclerView.setVisibility(View.VISIBLE);
             return root;
         }
 
@@ -88,19 +88,15 @@ public class InventoryFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    private void loadInventory(){
+    private void loadInventory() {
         new Thread(() -> {
             try{
                 InventoryManager inventoryManager = new InventoryManager(new AuthModel(requireContext()));
                 loadedInventory = inventoryManager.getInventoryModel(((MarketActivity)requireActivity()).gameId);
 
-                requireActivity().runOnUiThread(() -> {
-                    inventoryLoader.setVisibility(View.GONE);
-                    inventoryRecyclerView.setVisibility(View.VISIBLE);
-                    setAdapter(inventoryRecyclerView);
-                });
+                setAdapter(inventoryRecyclerView);
             }
-            catch (Exception e){ Log.e(MainActivity.LOG_TAG, e.toString()); }
+            catch (Exception e) { Log.e(MainActivity.LOG_TAG, e.toString()); }
         }).start();
     }
 
@@ -113,9 +109,31 @@ public class InventoryFragment extends Fragment {
         swipeRefreshLayout.setRefreshing(false);
     }
 
-    private void setAdapter(RecyclerView inventoryRecyclerView){
-        inventoryRecyclerView.setAdapter(new InventoryRecyclerViewAdapter(
-                requireContext(), requireActivity(), this, inventoryRecyclerView, loadedInventory));
+    private void setAdapter(RecyclerView inventoryRecyclerView) {
+        new Thread(() -> {
+            try {
+                InventoryRecyclerViewAdapter adapter = new InventoryRecyclerViewAdapter(
+                        requireContext(), requireActivity(), this,
+                        inventoryRecyclerView, loadedInventory);
+
+                requireActivity().runOnUiThread(() -> {
+                    inventoryRecyclerView.setAdapter(adapter);
+
+                    inventoryLoader.setVisibility(View.GONE);
+
+                    Transition transition = new Slide(Gravity.BOTTOM);
+                    transition.setDuration(300);
+                    transition.addTarget(inventoryRecyclerView);
+
+                    TransitionManager.beginDelayedTransition(swipeRefreshLayout, transition);
+
+                    inventoryRecyclerView.setVisibility(View.VISIBLE);
+                });
+            }
+            catch (Exception e) {
+                Log.e(MainActivity.LOG_TAG, "Failed to set inventory adapter: " + e.getMessage());
+            }
+        }).start();
     }
 
     private void loadWalletBalance(CircularProgressIndicator balanceLoader, TextView inventoryBalanceTextView) {
@@ -124,7 +142,7 @@ public class InventoryFragment extends Fragment {
             String balance = inventoryManager.getWalletBalance();
 
             try{
-                if (balance == null || balance.equals("")){
+                if (balance == null || balance.equals("")) {
                     requireActivity().runOnUiThread(() -> {
                         balanceLoader.setVisibility(View.GONE);
                         inventoryBalanceTextView.setText(String.format(getResources().getString(R.string.wallet_balance), "null"));
@@ -137,7 +155,7 @@ public class InventoryFragment extends Fragment {
                     inventoryBalanceTextView.setText(String.format(getResources().getString(R.string.wallet_balance), balance));
                 });
             }
-            catch (Exception ignored){}
+            catch (Exception ignored) {}
         }).start();
     }
 

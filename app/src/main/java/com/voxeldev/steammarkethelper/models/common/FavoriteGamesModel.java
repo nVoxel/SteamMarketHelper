@@ -40,12 +40,12 @@ public class FavoriteGamesModel {
         try{
             List<String> loadedFavorites = gson.fromJson(
                     cacheModel.readFile("favorites.smh"),
-                    new TypeToken<List<String>>(){}.getType()
+                    new TypeToken<List<String>>() {}.getType()
             );
 
             return (loadedFavorites == null) ? new ArrayList<>() : loadedFavorites;
         }
-        catch (Exception e){
+        catch (Exception e) {
             Log.e(MainActivity.LOG_TAG, "Failed to load favorites: " + e.getMessage());
         }
 
@@ -57,7 +57,7 @@ public class FavoriteGamesModel {
             cacheModel.writeToFile("favorites.smh",
                     gson.toJson(favorites));
         }
-        catch (Exception e){
+        catch (Exception e) {
             Log.e(MainActivity.LOG_TAG, "Failed to save favorites: " + e.getMessage());
         }
     }

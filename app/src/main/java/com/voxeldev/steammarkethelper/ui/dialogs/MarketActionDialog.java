@@ -77,7 +77,7 @@ public class MarketActionDialog extends BottomSheetDialogFragment {
         }
 
         String currencyData = getCurrencyData();
-        if (currencyData.equals("")){
+        if (currencyData.equals("")) {
             try {
                 currencyString = requireContext().getString(R.string.not_available);
             }
@@ -87,7 +87,7 @@ public class MarketActionDialog extends BottomSheetDialogFragment {
 
         try {
             List<MarketCurrencyModel> currencyList = new Gson().fromJson(currencyData,
-                    new TypeToken<List<MarketCurrencyModel>>(){}.getType());
+                    new TypeToken<List<MarketCurrencyModel>>() {}.getType());
 
             currencyString = Objects.requireNonNull(currencyList.stream()
                     .filter(i -> i.eCurrencyCode == currencyCode)

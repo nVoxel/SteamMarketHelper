@@ -42,14 +42,14 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     private Map<String, Integer> positionsBeforeMove;
     private final RecyclerView recyclerView;
 
-    public GamesRecyclerViewAdapter(Activity activity, Elements games, RecyclerView recyclerView){
+    public GamesRecyclerViewAdapter(Activity activity, Elements games, RecyclerView recyclerView) {
         this.context = activity.getApplicationContext();
         this.activity = activity;
         this.recyclerView = recyclerView;
 
         this.games = games;
 
-        if (games == null || games.size() < 1){
+        if (games == null || games.size() < 1) {
             return;
         }
 
@@ -59,9 +59,9 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         int beginBoundary = 0;
         int i = games.size() - 1;
 
-        while (i >= beginBoundary){
+        while (i >= beginBoundary) {
             String name = games.get(i).text();
-            if (favoriteGamesModel.isInFavorites(name)){
+            if (favoriteGamesModel.isInFavorites(name)) {
                 positionsBeforeMove.put(name, i);
                 moveElementsItem(i, 0);
                 beginBoundary++;
@@ -113,7 +113,7 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
                 context.startActivity(intent);
                 activity.overridePendingTransition(R.anim.left_in, R.anim.right_out);
             }
-            catch (Exception e){
+            catch (Exception e) {
                 Log.e(MainActivity.LOG_TAG, "Failed to start MarketActivity: " + e.getMessage());
             }
         });
@@ -131,7 +131,7 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         String name = games.get(position).text();
         ((ViewHolder)holder).getGameTextView().setText(name);
 
-        if (favoriteGamesModel.isInFavorites(name)){
+        if (favoriteGamesModel.isInFavorites(name)) {
             ((ViewHolder) holder).getStarImageView().setVisibility(View.VISIBLE);
         }
         else{
@@ -167,7 +167,7 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
                         }
                     });
         }
-        catch (Exception e){
+        catch (Exception e) {
             Log.e(MainActivity.LOG_TAG, "Failed to load game icon: " + games.get(position).text());
         }
     }
@@ -181,10 +181,10 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         int itemPos = recyclerView.getChildLayoutPosition(view);
         String name = games.get(itemPos).text();
 
-        if (favoriteGamesModel.isInFavorites(name)){
+        if (favoriteGamesModel.isInFavorites(name)) {
             favoriteGamesModel.removeFromFavorites(name);
 
-            if (positionsBeforeMove.containsKey(name)){
+            if (positionsBeforeMove.containsKey(name)) {
                 int toPos = positionsBeforeMove.get(name);
                 moveElementsItem(itemPos, toPos);
                 notifyItemMoved(itemPos, toPos);
@@ -211,7 +211,7 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
-    private void moveElementsItem(int fromPos, int toPos){
+    private void moveElementsItem(int fromPos, int toPos) {
         Element itemToMove = games.get(fromPos);
         games.remove(itemToMove);
         games.add(toPos, itemToMove);

@@ -34,7 +34,7 @@ public class MarketRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     public MarketRecyclerViewAdapter(Context context, Activity activity,
                                      FragmentManager fragmentManager, RecyclerView recyclerView,
-                                     MarketModel model){
+                                     MarketModel model) {
         this.context = context;
         this.model = model;
         this.recyclerView = recyclerView;
@@ -82,7 +82,7 @@ public class MarketRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 .inflate(R.layout.item_marketrecyclerview, parent, false);
 
         view.setOnClickListener(clickView -> {
-            if (fragmentManager.getFragments().size() > 0){
+            if (fragmentManager.getFragments().size() > 0) {
                 return;
             }
 
@@ -92,11 +92,11 @@ public class MarketRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                                 recyclerView.getChildLayoutPosition(clickView)));
                 itemInfoDialog.showNow(fragmentManager, "marketItemInfoDialog");
             }
-            catch (Exception e){ Log.e(MainActivity.LOG_TAG, e.toString()); }
+            catch (Exception e) { Log.e(MainActivity.LOG_TAG, e.toString()); }
         });
 
         view.setOnLongClickListener(clickView -> {
-            if (fragmentManager.getFragments().size() > 0){
+            if (fragmentManager.getFragments().size() > 0) {
                 return true;
             }
 
