@@ -75,7 +75,7 @@ public class ListingsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         view.setOnClickListener(clickView -> {
             if (fragmentManager.getFragments().size() < 1) {
                 try {
-                    ItemInfoDialog itemInfoDialog = ItemInfoDialog.newListingsInstance(
+                    ItemInfoDialog itemInfoDialog = ItemInfoDialog.getInstance(
                             listings.get(recyclerView.getChildLayoutPosition(clickView)));
                     itemInfoDialog.showNow(fragmentManager, "listingsItemInfoDialog");
                 }
@@ -94,6 +94,15 @@ public class ListingsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         Glide.with(context)
                 .load(listings.get(position).iconUrl)
                 .into(((ViewHolder)holder).getIconImageView());
+    }
+
+    public List<ListingModel> getListings() {
+        return listings;
+    }
+
+    public void removeListing(int position) {
+        listings.remove(position);
+        notifyItemRemoved(position);
     }
 
     @Override

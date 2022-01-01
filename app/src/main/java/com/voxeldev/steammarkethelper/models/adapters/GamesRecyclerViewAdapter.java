@@ -96,6 +96,7 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_gamesrecyclerview, parent, false);
+
         view.setOnClickListener(clickView -> {
             try{
                 Element game = games.get(recyclerView.getChildLayoutPosition(clickView));
@@ -116,10 +117,12 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
                 Log.e(MainActivity.LOG_TAG, "Failed to start MarketActivity: " + e.getMessage());
             }
         });
+
         view.setOnLongClickListener(clickView -> {
             changeFavorite(clickView);
             return true;
         });
+
         return new ViewHolder(view);
     }
 

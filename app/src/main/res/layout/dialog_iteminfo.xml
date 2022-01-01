@@ -19,36 +19,44 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
     <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginTop="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iteminfo_sheetpin">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/iteminfo_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:animateLayoutChanges="true">
+
             <ImageView
                 android:id="@+id/iteminfo_imageview"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
+                android:contentDescription="@string/item_picture"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@tools:sample/avatars"
-                android:contentDescription="@string/item_picture" />
+                tools:src="@tools:sample/avatars" />
+
             <TextView
                 android:id="@+id/iteminfo_itemtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
+                android:gravity="center"
                 android:textColor="@color/textColor"
                 android:textSize="25sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iteminfo_imageview"
                 tools:text="Whiteout Pants" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/iteminfo_workshopbutton"
                 android:layout_width="wrap_content"
@@ -56,10 +64,11 @@
                 android:layout_marginTop="15dp"
                 android:text="@string/workshop_button_text"
                 android:visibility="gone"
-                tools:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/iteminfo_itemtitle" />
+                app:layout_constraintTop_toBottomOf="@id/iteminfo_itemtitle"
+                tools:visibility="visible" />
+
             <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/iteminfo_loader"
                 android:layout_width="wrap_content"
@@ -82,15 +91,16 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/iteminfo_loader" />
+
             <LinearLayout
                 android:id="@+id/iteminfo_listings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@+id/iteminfo_loader"
                 android:visibility="gone"
-                >
+                app:layout_constraintTop_toBottomOf="@+id/iteminfo_loader">
+
                 <TextView
                     android:id="@+id/iteminfo_selllistings"
                     android:layout_width="wrap_content"
@@ -99,25 +109,29 @@
                     android:text="@string/sell_listings"
                     android:textColor="@color/textColor"
                     android:textSize="20sp" />
+
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:cardBackgroundColor="@color/BottomNav"
-                    app:cardElevation="0dp"
                     app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp"
                     app:cardUseCompatPadding="true"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/CardStroke" >
+                    app:strokeColor="@color/CardStroke"
+                    app:strokeWidth="1dp">
+
                     <TableLayout
                         android:id="@+id/iteminfo_selltablelayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         tools:background="@color/CardStroke"
                         tools:layout_height="100dp">
+
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/tablerow_border_bottom">
+
                             <TextView
                                 android:layout_weight="0.5"
                                 android:padding="5dp"
@@ -125,6 +139,7 @@
                                 android:textAlignment="center"
                                 android:textColor="@color/textColor"
                                 android:textSize="20sp" />
+
                             <TextView
                                 android:layout_weight="0.5"
                                 android:padding="5dp"
@@ -135,6 +150,7 @@
                         </TableRow>
                     </TableLayout>
                 </com.google.android.material.card.MaterialCardView>
+
                 <TextView
                     android:id="@+id/iteminfo_buyorders"
                     android:layout_width="wrap_content"
@@ -144,15 +160,17 @@
                     android:text="@string/buy_orders"
                     android:textColor="@color/textColor"
                     android:textSize="20sp" />
+
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:cardBackgroundColor="@color/BottomNav"
-                    app:cardElevation="0dp"
                     app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp"
                     app:cardUseCompatPadding="true"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/CardStroke" >
+                    app:strokeColor="@color/CardStroke"
+                    app:strokeWidth="1dp">
+
                     <TableLayout
                         android:id="@+id/iteminfo_buyTableLayout"
                         android:layout_width="match_parent"
@@ -160,10 +178,12 @@
                         app:layout_constraintTop_toBottomOf="@id/iteminfo_buyorders"
                         tools:background="@color/CardStroke"
                         tools:layout_height="100dp">
+
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/tablerow_border_bottom">
+
                             <TextView
                                 android:layout_weight="0.5"
                                 android:padding="5dp"
@@ -171,6 +191,7 @@
                                 android:textAlignment="center"
                                 android:textColor="@color/textColor"
                                 android:textSize="20sp" />
+
                             <TextView
                                 android:layout_weight="0.5"
                                 android:padding="5dp"
@@ -188,9 +209,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:minHeight="200dp"
                 android:clipChildren="false"
                 android:clipToPadding="false"
+                android:minHeight="200dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iteminfo_listings" />

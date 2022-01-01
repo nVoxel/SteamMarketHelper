@@ -132,7 +132,7 @@ public class MarketFragment extends Fragment {
     private void replaceAdapter() {
         Parcelable state = marketRecyclerView.getLayoutManager().onSaveInstanceState();
         MarketRecyclerViewAdapter adapter = new MarketRecyclerViewAdapter(requireContext(),
-                loadedMarket, marketRecyclerView, getChildFragmentManager());
+                requireActivity(), getChildFragmentManager(), marketRecyclerView, loadedMarket);
         marketRecyclerView.setAdapter(adapter);
         marketRecyclerView.getLayoutManager().onRestoreInstanceState(state);
     }

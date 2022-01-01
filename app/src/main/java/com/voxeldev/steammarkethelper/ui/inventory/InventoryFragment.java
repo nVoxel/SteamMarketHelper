@@ -48,14 +48,7 @@ public class InventoryFragment extends Fragment {
         inventoryLoader = root.findViewById(R.id.inventory_loader);
 
         swipeRefreshLayout = root.findViewById(R.id.inventory_swiperefresh);
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            inventoryRecyclerView.setVisibility(View.GONE);
-            inventoryLoader.setVisibility(View.VISIBLE);
-            Parcelable state = inventoryRecyclerView.getLayoutManager().onSaveInstanceState();
-            loadInventory();
-            inventoryRecyclerView.getLayoutManager().onRestoreInstanceState(state);
-            swipeRefreshLayout.setRefreshing(false);
-        });
+        swipeRefreshLayout.setOnRefreshListener(this::reloadInventory);
 
         CircularProgressIndicator inventoryBalanceLoader = root.findViewById(R.id.inventory_balance_loader);
         TextView inventoryBalanceTextView = root.findViewById(R.id.inventory_balance_textview);
@@ -73,14 +66,14 @@ public class InventoryFragment extends Fragment {
         if (savedInstanceState != null) {
             loadedInventory = new Gson().fromJson(savedInstanceState.getString("inventorySerialized", ""),
                     InventoryModel.class);
-            setAdapter();
+            setAdapter(inventoryRecyclerView);
             return root;
         }
 
         MarketActivity marketActivity = (MarketActivity)requireActivity();
         if (marketActivity.loadedInventory != null && marketActivity.inventoryRecyclerViewSavedState != null) {
             loadedInventory = marketActivity.loadedInventory;
-            setAdapter();
+            setAdapter(inventoryRecyclerView);
             inventoryRecyclerView.getLayoutManager().onRestoreInstanceState(marketActivity.inventoryRecyclerViewSavedState);
             return root;
         }
@@ -97,29 +90,37 @@ public class InventoryFragment extends Fragment {
 
     private void loadInventory() {
         new Thread(() -> {
-            try {
+            try{
                 InventoryManager inventoryManager = new InventoryManager(new AuthModel(requireContext()));
                 loadedInventory = inventoryManager.getInventoryModel(((MarketActivity)requireActivity()).gameId);
 
-                setAdapter();
+                setAdapter(inventoryRecyclerView);
             }
-            catch (Exception e) {
-                Log.e(MainActivity.LOG_TAG, "Failed to load inventory: " + e.getMessage());
-            }
+            catch (Exception e) { Log.e(MainActivity.LOG_TAG, e.toString()); }
         }).start();
     }
 
-    private void setAdapter() {
+    public void reloadInventory() {
+        inventoryRecyclerView.setVisibility(View.GONE);
+        inventoryLoader.setVisibility(View.VISIBLE);
+        Parcelable state = inventoryRecyclerView.getLayoutManager().onSaveInstanceState();
+        loadInventory();
+        inventoryRecyclerView.getLayoutManager().onRestoreInstanceState(state);
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    private void setAdapter(RecyclerView inventoryRecyclerView) {
         new Thread(() -> {
             try {
                 InventoryRecyclerViewAdapter adapter = new InventoryRecyclerViewAdapter(
-                        requireContext(), requireActivity(), inventoryRecyclerView,
-                        getChildFragmentManager(), loadedInventory);
+                        requireContext(), requireActivity(), this,
+                        inventoryRecyclerView, loadedInventory);
 
                 requireActivity().runOnUiThread(() -> {
+                    inventoryRecyclerView.setAdapter(adapter);
+
                     inventoryLoader.setVisibility(View.GONE);
 
-                    inventoryRecyclerView.setAdapter(adapter);
                     Transition transition = new Slide(Gravity.BOTTOM);
                     transition.setDuration(300);
                     transition.addTarget(inventoryRecyclerView);

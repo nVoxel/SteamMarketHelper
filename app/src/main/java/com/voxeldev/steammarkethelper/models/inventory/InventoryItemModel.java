@@ -10,4 +10,6 @@ public class InventoryItemModel {
     public List<ActionModel> actions;
     public List<InventoryOwnerDescription> owner_descriptions;
     public String name;
+    public int tradable;
+    public int marketable;
 }

@@ -39,7 +39,7 @@ import com.voxeldev.steammarkethelper.models.market.MarketItemModel;
 import com.voxeldev.steammarkethelper.models.market.MarketItemPriceHistory;
 import com.voxeldev.steammarkethelper.models.market.MarketManager;
 import com.voxeldev.steammarkethelper.models.market.MarketOrderModel;
-import com.voxeldev.steammarkethelper.ui.charts.ChartMarkerView;
+import com.voxeldev.steammarkethelper.ui.misc.ChartMarkerView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -53,32 +53,38 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
     private List<ActionModel> actions;
     private String workshopLink;
     private String name;
-    private static final String iconUrlPrefix = "https://community.akamai.steamstatic.com/economy/image/";
+    public static final String iconUrlPrefix = "https://community.akamai.steamstatic.com/economy/image/";
 
-    public static ItemInfoDialog newInventoryInstance(InventoryItemModel inventoryItem) {
+    public static ItemInfoDialog getInstance(InventoryItemModel inventoryItem) {
         Bundle args = new Bundle();
         args.putInt("type", 0);
         args.putString("item", new Gson().toJson(inventoryItem));
+
         ItemInfoDialog itemInfoDialog = new ItemInfoDialog();
         itemInfoDialog.setArguments(args);
+
         return itemInfoDialog;
     }
 
-    public static ItemInfoDialog newMarketInstance(MarketItemModel marketItem) {
+    public static ItemInfoDialog getInstance(MarketItemModel marketItem) {
         Bundle args = new Bundle();
         args.putInt("type", 1);
         args.putString("item", new Gson().toJson(marketItem));
+
         ItemInfoDialog itemInfoDialog = new ItemInfoDialog();
         itemInfoDialog.setArguments(args);
+
         return itemInfoDialog;
     }
 
-    public static ItemInfoDialog newListingsInstance(ListingModel listingModel) {
+    public static ItemInfoDialog getInstance(ListingModel listingModel) {
         Bundle args = new Bundle();
         args.putInt("type", 2);
         args.putString("item", new Gson().toJson(listingModel));
+
         ItemInfoDialog itemInfoDialog = new ItemInfoDialog();
         itemInfoDialog.setArguments(args);
+
         return itemInfoDialog;
     }
 
