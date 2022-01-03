@@ -1,5 +1,6 @@
 package com.voxeldev.steammarkethelper.ui.market;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -35,10 +37,16 @@ public class MarketFragment extends Fragment {
     private RecyclerView marketRecyclerView;
     private CustomSwipeRefresh customSwipeRefresh;
     private boolean marketLoading;
+    private int columnsCount;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_market, container, false);
         setHasOptionsMenu(true);
+
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(requireContext());
+        columnsCount = Integer
+                .parseInt(sharedPreferences.getString("market_columns", "2"));
 
         customSwipeRefresh = root.findViewById(R.id.market_swiperefresh);
         customSwipeRefresh.setOnRefreshListener(direction -> {
@@ -52,7 +60,7 @@ public class MarketFragment extends Fragment {
         marketGoTopButton.setOnClickListener(v -> ((StaggeredGridLayoutManager)marketRecyclerView
                 .getLayoutManager()).scrollToPositionWithOffset(0, 0));
 
-        marketRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,
+        marketRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(columnsCount,
                 StaggeredGridLayoutManager.VERTICAL));
         marketRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -132,7 +140,8 @@ public class MarketFragment extends Fragment {
     private void replaceAdapter() {
         Parcelable state = marketRecyclerView.getLayoutManager().onSaveInstanceState();
         MarketRecyclerViewAdapter adapter = new MarketRecyclerViewAdapter(requireContext(),
-                requireActivity(), getChildFragmentManager(), marketRecyclerView, loadedMarket);
+                requireActivity(), getChildFragmentManager(), marketRecyclerView,
+                loadedMarket, columnsCount);
         marketRecyclerView.setAdapter(adapter);
         marketRecyclerView.getLayoutManager().onRestoreInstanceState(state);
     }

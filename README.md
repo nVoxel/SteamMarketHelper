@@ -20,4 +20,4 @@ It uses Room to store items' «name_id» values for faster load of item info dia
 Custom swipe refresh layout for marketplace
 
 ## 🖼 Screenshots
-<img src="https://i.imgur.com/uDDkPlt.png" alt="Games Menu" width="25%" height="25%"> <img src="https://i.imgur.com/N8mHLXA.png" alt="Inventory" width="25%" height="25%"> <img src="https://i.imgur.com/YfqwmT2.png" alt="Marketplace" width="25%" height="25%"> <img src="https://i.imgur.com/Xo8i19Y.png" alt="Authentication" width="25%" height="25%"> <img src="https://imgur.com/aQpACtE.png" alt="Authentication" width="25%" height="25%">
+<img src="https://i.imgur.com/uu8CE6s.png" alt="Games Menu" width="25%" height="25%"> <img src="https://i.imgur.com/SjUdT3S.png" alt="Inventory" width="25%" height="25%"> <img src="https://i.imgur.com/6xsqvP6.png" alt="Marketplace" width="25%" height="25%"> <img src="https://i.imgur.com/0e6S6eC.png" alt="Marketplace 2" width="25%" height="25%"> <img src="https://i.imgur.com/ANV6fcl.png" alt="Listings" width="25%" height="25%"> <img src="https://imgur.com/aQpACtE.png" alt="Authentication" width="25%" height="25%">

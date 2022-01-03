@@ -9,6 +9,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,11 +45,12 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
     private final InventoryFragment fragment;
     private final FragmentManager fragmentManager;
     private final InventoryModel model;
+    private final int columnsCount;
     private final int gameId;
 
     public InventoryRecyclerViewAdapter(Context context, Activity activity,
                                         InventoryFragment fragment, RecyclerView recyclerView,
-                                        InventoryModel model) {
+                                        InventoryModel model, int columnsCount) {
         this.context = context;
         this.activity = activity;
         this.fragment = fragment;
@@ -56,16 +58,23 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
         this.fragmentManager = fragment.getChildFragmentManager();
         this.model = model;
         gameId = ((MarketActivity)activity).gameId;
+        this.columnsCount = columnsCount;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView nameTextView;
+        private TextView nameTextView;
         private final Chip tradeBanChip;
+        private ImageView itemImageView;
 
-        public ViewHolder(View view) {
+        public ViewHolder(View view, int columnsCount) {
             super(view);
 
-            nameTextView = view.findViewById(R.id.inventoryrecyclerview_nametextview);
+            if (columnsCount == 2) {
+                nameTextView = view.findViewById(R.id.inventoryrecyclerview_nametextview);
+            }
+            else {
+                itemImageView = view.findViewById(R.id.inventoryrecyclerview_itemimageview);
+            }
             tradeBanChip = view.findViewById(R.id.inventoryrecyclerview_tradebanchip);
         }
 
@@ -76,6 +85,10 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
         public Chip getTradeBanChip() {
             return tradeBanChip;
         }
+
+        public ImageView getItemImageView() {
+            return itemImageView;
+        }
     }
 
     @NonNull
@@ -84,7 +97,8 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent,
                                                       int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_inventoryrecyclerview, parent, false);
+                .inflate((columnsCount == 2) ? R.layout.item_inventoryrecyclerview :
+                        R.layout.item_inventoryrecyclerview_small, parent, false);
 
         view.setOnClickListener(clickView -> {
             if (fragmentManager.getFragments().size() > 0) {
@@ -142,7 +156,7 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
             return true;
         });
 
-        return new ViewHolder(view);
+        return new ViewHolder(view, columnsCount);
     }
 
     @SuppressLint("SetTextI18n")
@@ -158,39 +172,48 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
             return;
         }
 
-        int amount = Integer.parseInt(inventoryAsset.amount);
-        ((ViewHolder)holder).getNameTextView().setText(
-                inventoryItem.name + ((amount > 1) ? " x " + amount : "")
-        );
+        if (columnsCount == 2) {
+            int amount = Integer.parseInt(inventoryAsset.amount);
+            ((ViewHolder)holder).getNameTextView().setText(
+                    inventoryItem.name + ((amount > 1) ? " x " + amount : "")
+            );
 
-        Integer width = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 100,
-                context.getResources().getDisplayMetrics());
+            int width = (int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 100,
+                    context.getResources().getDisplayMetrics());
 
-        //noinspection SuspiciousNameCombination
-        Glide.with(context)
-                .load(ItemInfoDialog.iconUrlPrefix + inventoryItem.icon_url)
-                .into(new CustomTarget<Drawable>(width, width) {
-                    @Override
-                    public void onResourceReady(@NonNull @NotNull Drawable resource,
-                                                @Nullable @org.jetbrains.annotations.Nullable Transition<? super Drawable> transition) {
-                        ((ViewHolder) holder).getNameTextView()
-                                .setCompoundDrawablesWithIntrinsicBounds(
-                                        null, resource, null, null);
-                    }
+            //noinspection SuspiciousNameCombination
+            Glide.with(context)
+                    .load(ItemInfoDialog.iconUrlPrefix + inventoryItem.icon_url)
+                    .into(new CustomTarget<Drawable>(width, width) {
+                        @Override
+                        public void onResourceReady(@NonNull @NotNull Drawable resource,
+                                                    @Nullable @org.jetbrains.annotations.Nullable Transition<? super Drawable> transition) {
+                            ((ViewHolder) holder).getNameTextView()
+                                    .setCompoundDrawablesWithIntrinsicBounds(
+                                            null, resource, null, null);
+                        }
 
-                    @Override
-                    public void onLoadCleared(@Nullable @org.jetbrains.annotations.Nullable Drawable placeholder) {
-                        ((ViewHolder) holder).getNameTextView()
-                                .setCompoundDrawablesWithIntrinsicBounds(
-                                        null, placeholder, null, null);
-                    }
-                });
+                        @Override
+                        public void onLoadCleared(@Nullable @org.jetbrains.annotations.Nullable Drawable placeholder) {
+                            ((ViewHolder) holder).getNameTextView()
+                                    .setCompoundDrawablesWithIntrinsicBounds(
+                                            null, placeholder, null, null);
+                        }
+                    });
+        }
+        else {
+            Glide.with(context)
+                    .load(ItemInfoDialog.iconUrlPrefix + inventoryItem.icon_url)
+                    .into(((ViewHolder)holder).getItemImageView());
+        }
 
         ((ViewHolder) holder).getTradeBanChip().setVisibility(View.GONE);
         if (inventoryItem.owner_descriptions != null && inventoryItem.owner_descriptions.size() > 0) {
             for (InventoryOwnerDescription description : inventoryItem.owner_descriptions) {
-                if (description.value == null || !description.value.contains("date")) {continue;}
+                if (description.value == null || !description.value.contains("date")) {
+                    continue;
+                }
 
                 try {
                     String chipText = getTimeDifference(

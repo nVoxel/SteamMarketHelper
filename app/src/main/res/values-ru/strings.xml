@@ -73,4 +73,7 @@
     <string name="market_action_continue">Продолжить</string>
     <string name="market_action_cancel">Отмена</string>
     <string name="market_action_canceled">Действие отменено</string>
+    <string name="columns">Столбцы</string>
+    <string name="columns_market">Выберите количество столбцов на Торговой площадке</string>
+    <string name="columns_inventory">Выберите количество столбцов в Инвентаре</string>
 </resources>

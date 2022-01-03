@@ -139,7 +139,7 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         }
 
         try{
-            Integer width = (int) TypedValue.applyDimension(
+            int width = (int) TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP, 40,
                     context.getResources().getDisplayMetrics());
 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/marketrecyclerview_main"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardBackgroundColor="@color/BottomNav"
+    app:cardElevation="0dp"
+    app:cardCornerRadius="10dp"
+    app:cardUseCompatPadding="true"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/CardStroke">
+
+    <TextView
+        android:id="@+id/marketrecyclerview_pricetextview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        android:textSize="17sp"
+        android:textColor="@color/textColor"
+        android:textAlignment="center"
+        tools:drawableTop="@tools:sample/avatars"
+        tools:text="$10 USD"/>
+</com.google.android.material.card.MaterialCardView>

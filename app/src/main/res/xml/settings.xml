@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+
     <PreferenceCategory
         android:title="@string/ui">
         <ListPreference
@@ -11,6 +13,32 @@
             android:entries="@array/themes"
             android:entryValues="@array/themes_values"
             android:dialogTitle="@string/select_theme"
+            android:negativeButtonText="" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/market" >
+        <ListPreference
+            android:key="market_columns"
+            android:title="@string/columns"
+            android:summary="@string/columns_market"
+            android:defaultValue="2"
+            android:entries="@array/column_counts"
+            android:entryValues="@array/column_counts"
+            android:dialogTitle="@string/columns_market"
+            android:negativeButtonText="" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/inventory" >
+        <ListPreference
+            android:key="inventory_columns"
+            android:title="@string/columns"
+            android:summary="@string/columns_inventory"
+            android:defaultValue="2"
+            android:entries="@array/column_counts"
+            android:entryValues="@array/column_counts"
+            android:dialogTitle="@string/columns_inventory"
             android:negativeButtonText="" />
     </PreferenceCategory>
 </PreferenceScreen>

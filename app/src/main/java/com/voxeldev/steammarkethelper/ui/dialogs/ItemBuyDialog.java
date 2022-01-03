@@ -73,7 +73,7 @@ public class ItemBuyDialog extends MarketActionDialog {
         MaterialTextView nameTextView = root.findViewById(R.id.itembuy_nametextview);
         nameTextView.setText(args.getString("itemName"));
 
-        Integer width = (int) TypedValue.applyDimension(
+        int width = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 80,
                 requireContext().getResources().getDisplayMetrics());
         //noinspection SuspiciousNameCombination

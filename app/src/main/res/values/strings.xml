@@ -73,4 +73,7 @@
     <string name="market_action_continue">Continue</string>
     <string name="market_action_cancel">Cancel</string>
     <string name="market_action_canceled">Action was canceled</string>
+    <string name="columns">Columns</string>
+    <string name="columns_market">Change columns count in Market</string>
+    <string name="columns_inventory">Change columns count in Inventory</string>
 </resources>

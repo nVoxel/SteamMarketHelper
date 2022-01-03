@@ -1,5 +1,6 @@
 package com.voxeldev.steammarkethelper.ui.inventory;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -38,19 +40,27 @@ public class InventoryFragment extends Fragment {
     private RecyclerView inventoryRecyclerView;
     private CircularProgressIndicator inventoryLoader;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private int columnsCount;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_inventory, container, false);
 
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(requireContext());
+        columnsCount = Integer
+                .parseInt(sharedPreferences.getString("inventory_columns", "2"));
+
         inventoryRecyclerView = root.findViewById(R.id.inventory_recyclerview);
-        inventoryRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        inventoryRecyclerView.setLayoutManager(
+                new StaggeredGridLayoutManager(columnsCount, StaggeredGridLayoutManager.VERTICAL));
 
         inventoryLoader = root.findViewById(R.id.inventory_loader);
 
         swipeRefreshLayout = root.findViewById(R.id.inventory_swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(this::reloadInventory);
 
-        CircularProgressIndicator inventoryBalanceLoader = root.findViewById(R.id.inventory_balance_loader);
+        CircularProgressIndicator inventoryBalanceLoader = root
+                .findViewById(R.id.inventory_balance_loader);
         TextView inventoryBalanceTextView = root.findViewById(R.id.inventory_balance_textview);
         root.findViewById(R.id.inventory_balance_cardview).setOnClickListener(v -> {
             inventoryBalanceTextView.setText(getResources().getString(R.string.wallet_balance_not_set));
@@ -61,10 +71,13 @@ public class InventoryFragment extends Fragment {
         loadWalletBalance(inventoryBalanceLoader, inventoryBalanceTextView);
 
         FloatingActionButton marketGoTopButton = root.findViewById(R.id.inventory_goTopButton);
-        marketGoTopButton.setOnClickListener(v -> ((StaggeredGridLayoutManager)inventoryRecyclerView.getLayoutManager()).scrollToPositionWithOffset(0, 0));
+        marketGoTopButton.setOnClickListener(v ->
+                ((StaggeredGridLayoutManager)inventoryRecyclerView.getLayoutManager())
+                        .scrollToPositionWithOffset(0, 0));
 
         if (savedInstanceState != null) {
-            loadedInventory = new Gson().fromJson(savedInstanceState.getString("inventorySerialized", ""),
+            loadedInventory = new Gson().fromJson(savedInstanceState
+                            .getString("inventorySerialized", ""),
                     InventoryModel.class);
             setAdapter(inventoryRecyclerView);
             return root;
@@ -74,7 +87,8 @@ public class InventoryFragment extends Fragment {
         if (marketActivity.loadedInventory != null && marketActivity.inventoryRecyclerViewSavedState != null) {
             loadedInventory = marketActivity.loadedInventory;
             setAdapter(inventoryRecyclerView);
-            inventoryRecyclerView.getLayoutManager().onRestoreInstanceState(marketActivity.inventoryRecyclerViewSavedState);
+            inventoryRecyclerView.getLayoutManager()
+                    .onRestoreInstanceState(marketActivity.inventoryRecyclerViewSavedState);
             return root;
         }
 
@@ -114,7 +128,7 @@ public class InventoryFragment extends Fragment {
             try {
                 InventoryRecyclerViewAdapter adapter = new InventoryRecyclerViewAdapter(
                         requireContext(), requireActivity(), this,
-                        inventoryRecyclerView, loadedInventory);
+                        inventoryRecyclerView, loadedInventory, columnsCount);
 
                 requireActivity().runOnUiThread(() -> {
                     inventoryRecyclerView.setAdapter(adapter);
