@@ -78,7 +78,7 @@ public class ItemBuyDialog extends MarketActionDialog {
                 requireContext().getResources().getDisplayMetrics());
         //noinspection SuspiciousNameCombination
         Glide.with(requireContext())
-                .load(ItemInfoDialog.iconUrlPrefix + args.getString("itemIconUrl"))
+                .load(RequestManager.ICON_URL_PREFIX + args.getString("itemIconUrl"))
                 .into(new CustomTarget<Drawable>(width, width) {
                     @Override
                     public void onResourceReady(@NonNull @NotNull Drawable resource,
@@ -267,7 +267,7 @@ public class ItemBuyDialog extends MarketActionDialog {
 
         return new Request.Builder()
                 .url("https://steamcommunity.com/market/createbuyorder")
-                .addHeader("User-Agent", RequestManager.defaultUserAgent)
+                .addHeader("User-Agent", RequestManager.DEFAULT_USER_AGENT)
                 .addHeader("Cookie", cookie)
                 .addHeader("Referer", String.format(
                         "https://steamcommunity.com/market/listings/%s/%s",

@@ -4,7 +4,9 @@
     android:id="@+id/listings_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="3dp"
+    android:paddingTop="3dp"
+    android:paddingStart="3dp"
+    android:paddingEnd="3dp"
     xmlns:tools="http://schemas.android.com/tools" >
 
     <com.google.android.material.progressindicator.CircularProgressIndicator

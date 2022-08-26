@@ -339,7 +339,7 @@ class ListingsRecyclerCallback extends ItemTouchHelper.SimpleCallback {
     private Request buildRemoveSellRequest(String cookie, String listingId) {
         return new Request.Builder()
                 .url("https://steamcommunity.com/market/removelisting/" + listingId)
-                .addHeader("User-Agent", RequestManager.defaultUserAgent)
+                .addHeader("User-Agent", RequestManager.DEFAULT_USER_AGENT)
                 .addHeader("Cookie", cookie)
                 .addHeader("Referer", "https://steamcommunity.com/market/")
                 .post(new FormBody.Builder()
@@ -352,7 +352,7 @@ class ListingsRecyclerCallback extends ItemTouchHelper.SimpleCallback {
     private Request buildRemoveBuyRequest(String cookie, String orderId) {
         return new Request.Builder()
                 .url("https://steamcommunity.com/market/cancelbuyorder")
-                .addHeader("User-Agent", RequestManager.defaultUserAgent)
+                .addHeader("User-Agent", RequestManager.DEFAULT_USER_AGENT)
                 .addHeader("Cookie", cookie)
                 .addHeader("Referer", "https://steamcommunity.com/market/")
                 .post(new FormBody.Builder()

@@ -32,6 +32,7 @@ import com.voxeldev.steammarkethelper.MainActivity;
 import com.voxeldev.steammarkethelper.MarketActivity;
 import com.voxeldev.steammarkethelper.R;
 import com.voxeldev.steammarkethelper.models.common.ActionModel;
+import com.voxeldev.steammarkethelper.models.common.RequestManager;
 import com.voxeldev.steammarkethelper.models.inventory.InventoryItemModel;
 import com.voxeldev.steammarkethelper.models.listings.ListingModel;
 import com.voxeldev.steammarkethelper.models.market.MarketItemCommodityModel;
@@ -53,7 +54,6 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
     private List<ActionModel> actions;
     private String workshopLink;
     private String name;
-    public static final String iconUrlPrefix = "https://community.akamai.steamstatic.com/economy/image/";
 
     public static ItemInfoDialog getInstance(InventoryItemModel inventoryItem) {
         Bundle args = new Bundle();
@@ -120,7 +120,7 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
                 InventoryItemModel inventoryItem = new Gson().fromJson(
                         getArguments().getString("item"),
                         InventoryItemModel.class);
-                iconUrl = iconUrlPrefix + inventoryItem.icon_url;
+                iconUrl = RequestManager.ICON_URL_PREFIX + inventoryItem.icon_url;
                 name = inventoryItem.name;
                 actions = inventoryItem.actions;
                 break;
@@ -128,7 +128,7 @@ public class ItemInfoDialog extends BottomSheetDialogFragment {
                 MarketItemModel marketItem = new Gson().fromJson(
                         getArguments().getString("item"),
                         MarketItemModel.class);
-                iconUrl = iconUrlPrefix + marketItem.asset_description.icon_url;
+                iconUrl = RequestManager.ICON_URL_PREFIX + marketItem.asset_description.icon_url;
                 name = marketItem.name;
                 actions = marketItem.asset_description.actions;
                 break;

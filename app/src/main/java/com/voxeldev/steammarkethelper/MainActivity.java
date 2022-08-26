@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     TODO:Fix swiperefresh is search mode
     TODO:Datetime in y axis of charts, charts dark theme
     TODO:Inventory search, inventory filters (Chips?) (show only Tradeable & Marketable)
+    TODO:Make widget showing prices for specified items
     */
 
     @Override
@@ -125,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                 Response response = requestManager.getClient()
                         .newCall(requestManager.buildRequest(
                                 "https://steamcommunity.com/market/",
-                                AuthModel.necessaryMarketCookie +
+                                AuthModel.NECESSARY_MARKET_COOKIE +
                                         requestManager.getAuthModel().loadCookie())).execute();
 
                 Document document = Jsoup.parse(response.body().string());

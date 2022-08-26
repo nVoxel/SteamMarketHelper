@@ -7,7 +7,8 @@ import okhttp3.Request;
 
 public class RequestManager {
 
-    public static final String defaultUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36";
+    public static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36";
+    public static final String ICON_URL_PREFIX = "https://community.akamai.steamstatic.com/economy/image/";
     private final OkHttpClient client;
     private final AuthModel authModel;
 
@@ -23,7 +24,7 @@ public class RequestManager {
         return new Request.Builder()
                 .url(url)
                 .addHeader("Cookie", cookie)
-                .addHeader("User-Agent", defaultUserAgent)
+                .addHeader("User-Agent", DEFAULT_USER_AGENT)
                 .build();
     }
 }

@@ -107,7 +107,7 @@ public class MarketActionDialog extends BottomSheetDialogFragment {
 
             Request request = inventoryManager.buildRequest(String.format(
                     "https://steamcommunity.com/profiles/%s/inventory/", inventoryManager.getSteamId()),
-                    AuthModel.necessaryMarketCookie + inventoryManager.getAuthModel().loadCookie());
+                    AuthModel.NECESSARY_MARKET_COOKIE + inventoryManager.getAuthModel().loadCookie());
 
             Response response = inventoryManager.getClient().newCall(request).execute();
 

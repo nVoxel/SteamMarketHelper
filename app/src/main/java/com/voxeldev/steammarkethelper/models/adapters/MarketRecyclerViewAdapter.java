@@ -22,6 +22,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.voxeldev.steammarkethelper.MainActivity;
 import com.voxeldev.steammarkethelper.MarketActivity;
 import com.voxeldev.steammarkethelper.R;
+import com.voxeldev.steammarkethelper.models.common.RequestManager;
 import com.voxeldev.steammarkethelper.models.market.MarketItemModel;
 import com.voxeldev.steammarkethelper.models.market.MarketModel;
 import com.voxeldev.steammarkethelper.ui.dialogs.ItemBuyDialog;
@@ -136,7 +137,7 @@ public class MarketRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     String.format(context.getResources().getString(R.string.market_count),
                             model.results.get(position).sell_listings));
             Glide.with(context)
-                    .load(ItemInfoDialog.iconUrlPrefix +
+                    .load(RequestManager.ICON_URL_PREFIX +
                             model.results.get(position).asset_description.icon_url)
                     .into(((ViewHolder)holder).getImageView());
         }
@@ -150,7 +151,7 @@ public class MarketRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
             //noinspection SuspiciousNameCombination
             Glide.with(context)
-                    .load(ItemInfoDialog.iconUrlPrefix +
+                    .load(RequestManager.ICON_URL_PREFIX +
                             model.results.get(position).asset_description.icon_url)
                     .into(new CustomTarget<Drawable>(width, width) {
                         @Override

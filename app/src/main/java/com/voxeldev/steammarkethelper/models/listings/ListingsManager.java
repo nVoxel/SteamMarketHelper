@@ -97,7 +97,7 @@ public class ListingsManager extends RequestManager {
     private void loadMarketPage() throws Exception {
         Request marketRequest = buildRequest(
                 "https://steamcommunity.com/market/",
-                AuthModel.necessaryMarketCookie + getAuthModel().loadCookie());
+                AuthModel.NECESSARY_MARKET_COOKIE + getAuthModel().loadCookie());
 
         Response marketResponse = getClient().newCall(marketRequest).execute();
 

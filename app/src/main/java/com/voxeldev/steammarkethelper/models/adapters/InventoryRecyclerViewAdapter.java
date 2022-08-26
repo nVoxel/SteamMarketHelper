@@ -25,6 +25,7 @@ import com.google.android.material.chip.Chip;
 import com.voxeldev.steammarkethelper.MainActivity;
 import com.voxeldev.steammarkethelper.MarketActivity;
 import com.voxeldev.steammarkethelper.R;
+import com.voxeldev.steammarkethelper.models.common.RequestManager;
 import com.voxeldev.steammarkethelper.models.inventory.InventoryAssetModel;
 import com.voxeldev.steammarkethelper.models.inventory.InventoryItemModel;
 import com.voxeldev.steammarkethelper.models.inventory.InventoryModel;
@@ -184,7 +185,7 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
 
             //noinspection SuspiciousNameCombination
             Glide.with(context)
-                    .load(ItemInfoDialog.iconUrlPrefix + inventoryItem.icon_url)
+                    .load(RequestManager.ICON_URL_PREFIX + inventoryItem.icon_url)
                     .into(new CustomTarget<Drawable>(width, width) {
                         @Override
                         public void onResourceReady(@NonNull @NotNull Drawable resource,
@@ -204,7 +205,7 @@ public class InventoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
         }
         else {
             Glide.with(context)
-                    .load(ItemInfoDialog.iconUrlPrefix + inventoryItem.icon_url)
+                    .load(RequestManager.ICON_URL_PREFIX + inventoryItem.icon_url)
                     .into(((ViewHolder)holder).getItemImageView());
         }
 
