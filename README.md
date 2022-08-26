@@ -1,6 +1,9 @@
 # SteamMarketHelper (SMH)
 Steam Marketplace Mobile Client for Android
 
+## 📚 Archived
+Project is archived
+
 ## 📝 About
 SMH is a native Steam Marketplace viewer.\
 It's possible to view any game's marketplace with it.\
