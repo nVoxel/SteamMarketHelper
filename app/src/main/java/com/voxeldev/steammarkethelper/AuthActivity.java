@@ -20,7 +20,10 @@ public class AuthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_auth);
 
         WebView authWebView = findViewById(R.id.auth_webview);
+
         authWebView.getSettings().setJavaScriptEnabled(true);
+        authWebView.getSettings().setDomStorageEnabled(true);
+
         authWebView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
